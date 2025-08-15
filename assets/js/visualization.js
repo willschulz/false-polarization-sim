@@ -19,7 +19,7 @@ function mapValueToX(val) {
  * Main drawing function called every frame by p5.js
  */
 function draw() {
-    background(250);
+    background(255, 255, 255);
     
     // Draw panel dividers
     const ph = height / 4;

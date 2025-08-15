@@ -4,11 +4,11 @@
 
 /* CSS Variables for consistent theming */
 :root {
-    --primary-color: #0066cc;
+    --primary-color: #5a5a5a;
     --secondary-color: #6c757d;
-    --danger-color: #dc3545;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
+    --danger-color: #8a8a8a;
+    --success-color: #707070;
+    --warning-color: #9a9a9a;
     --light-bg: #fafafa;
     --white: #ffffff;
     --dark-text: #333333;
@@ -32,44 +32,70 @@ body {
     padding: 0;
     line-height: 1.6;
     color: var(--dark-text);
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ===================================================================
-   Header Styles
+   App Container & Sidebar Layout
    ================================================================= */
-header {
-    background: linear-gradient(135deg, var(--primary-color), #004499);
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 400px;
+    min-width: 400px;
+    background: var(--white);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    background: var(--light-bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===================================================================
+   Sidebar Header Styles
+   ================================================================= */
+.sidebar-header {
+    background: linear-gradient(135deg, #6a6a6a, #4a4a4a);
     color: white;
-    padding: 2rem 1rem;
+    padding: 2rem 1.5rem;
     text-align: center;
     box-shadow: var(--shadow);
 }
 
-header h1 {
+.sidebar-header h1 {
     margin: 0 0 0.5rem 0;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 300;
 }
 
 .subtitle {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     opacity: 0.9;
     font-weight: 300;
-    max-width: 800px;
-    margin: 0 auto;
+    line-height: 1.4;
 }
 
 /* ===================================================================
    Control Panel Styles
    ================================================================= */
 .controls {
-    padding: 2rem;
+    padding: 1.5rem;
     background: var(--white);
-    box-shadow: var(--shadow);
-    margin: 0 0 1rem 0;
-    max-width: 1200px;
-    margin: 0 auto 1rem auto;
+    flex: 1;
 }
 
 .control-group {
@@ -77,7 +103,7 @@ header h1 {
     padding: 1rem;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    background: #f8f9fa;
+    background: #f8f8f8;
 }
 
 .control-group:last-of-type {
@@ -97,28 +123,66 @@ input[type="range"] {
     width: 100%;
     max-width: 400px;
     height: 6px;
-    background: #ddd;
+    background: #d0d0d0;
     border-radius: 3px;
     outline: none;
     margin: 0.5rem 0;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+input[type="range"]::-webkit-slider-track {
+    width: 100%;
+    height: 6px;
+    background: #d0d0d0;
+    border-radius: 3px;
+    border: none;
+    outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
     appearance: none;
+    -webkit-appearance: none;
     width: 20px;
     height: 20px;
-    background: var(--primary-color);
+    background: #707070;
     border-radius: 50%;
     cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #606060;
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #d0d0d0;
+    border-radius: 3px;
+    border: none;
+    outline: none;
 }
 
 input[type="range"]::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: var(--primary-color);
+    background: #707070;
     border-radius: 50%;
     cursor: pointer;
     border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #606060;
 }
 
 .help-text {
@@ -160,46 +224,59 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background-color: #606060;
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #0052a3;
+    background-color: #4a4a4a;
 }
 
 .btn-secondary {
-    background-color: var(--secondary-color);
+    background-color: #757575;
     color: white;
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: #5a5a5a;
 }
 
 .btn-danger {
-    background-color: var(--danger-color);
+    background-color: #8a8a8a;
     color: white;
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: #6a6a6a;
 }
 
 /* ===================================================================
    Explanation Panel
    ================================================================= */
 .explanation {
-    background: white;
-    border-left: 4px solid var(--primary-color);
+    background: #f5f5f5;
+    border-left: 4px solid #707070;
     padding: 1.5rem;
-    margin-top: 2rem;
+    margin: 0 1.5rem;
     border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.sidebar-footer {
+    background: #505050;
+    color: white;
+    padding: 1.5rem;
+    margin-top: auto;
+}
+
+.sidebar-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 .explanation h3 {
     margin-top: 0;
-    color: var(--primary-color);
+    color: #555555;
     font-size: 1.3rem;
 }
 
@@ -219,65 +296,86 @@ input[type="range"]::-moz-range-thumb {
    Visualization Styles
    ================================================================= */
 .visualization {
-    background: var(--white);
-    padding: 1rem;
+    background: #ffffff !important;
+    padding: 2rem;
     box-shadow: var(--shadow);
-    max-width: 1200px;
-    margin: 0 auto 2rem auto;
+    margin: 2rem;
     border-radius: var(--border-radius);
+    height: calc(100vh - 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #canvasContainer {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 400px;
+    width: 100%;
+    height: 100%;
+    background: #ffffff !important;
 }
 
 /* Canvas styling will be handled by p5.js, but we can add container styles */
 canvas {
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #ffffff !important;
+    max-width: 100%;
+    max-height: 100%;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
-/* ===================================================================
-   Footer Styles
-   ================================================================= */
-footer {
-    background: #2c3e50;
-    color: white;
-    padding: 2rem;
-    text-align: center;
-    margin-top: 2rem;
-}
 
-footer p {
-    margin: 0;
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 1.1rem;
-    line-height: 1.7;
-}
 
 /* ===================================================================
    Responsive Design
    ================================================================= */
+@media (max-width: 1024px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    body {
+        height: auto;
+        overflow: auto;
+    }
+    
+    .sidebar {
+        width: 100%;
+        min-width: auto;
+        max-height: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .main-content {
+        min-height: 60vh;
+    }
+    
+    .visualization {
+        height: auto;
+        min-height: 60vh;
+        margin: 1rem;
+    }
+}
+
 @media (max-width: 768px) {
-    header {
+    .sidebar-header {
         padding: 1.5rem 1rem;
     }
     
-    header h1 {
-        font-size: 1.8rem;
+    .sidebar-header h1 {
+        font-size: 1.6rem;
     }
     
     .subtitle {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     
     .controls {
         padding: 1rem;
-        margin: 0 0.5rem 1rem 0.5rem;
     }
     
     .control-group {
@@ -293,9 +391,13 @@ footer p {
         text-align: center;
     }
     
+    .explanation {
+        margin: 0 1rem;
+    }
+    
     .visualization {
-        margin: 0 0.5rem 2rem 0.5rem;
-        padding: 0.5rem;
+        margin: 0.5rem;
+        padding: 1rem;
     }
     
     canvas {
@@ -305,16 +407,29 @@ footer p {
 }
 
 @media (max-width: 480px) {
-    header h1 {
-        font-size: 1.5rem;
+    .sidebar-header h1 {
+        font-size: 1.4rem;
     }
     
     .subtitle {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
     
     input[type="range"] {
         max-width: 100%;
+    }
+    
+    .controls {
+        padding: 0.75rem;
+    }
+    
+    .explanation {
+        padding: 1rem;
+        margin: 0 0.75rem;
+    }
+    
+    .sidebar-footer {
+        padding: 1rem;
     }
 }
 

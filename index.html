@@ -12,72 +12,81 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
-        <h1>Self-Censorship Multi-Stage Visualization</h1>
-        <p class="subtitle">
-            Exploring how user-level self-selection and attitude-level self-censorship 
-            create false polarization in visible ideologies
-        </p>
-    </header>
+    <!-- Main Container with Sidebar Layout -->
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <!-- Header Content -->
+            <div class="sidebar-header">
+                <h1>Self-Censorship Multi-Stage Visualization</h1>
+                <p class="subtitle">
+                    Exploring how user-level self-selection and attitude-level self-censorship 
+                    create false polarization in visible ideologies
+                </p>
+            </div>
 
-    <!-- Control Panel -->
-    <section class="controls" id="controlPanel">
-        <div class="control-group">
-            <label for="issuesSlider">Number of issues per user: <span id="issuesVal">20</span></label>
-            <input id="issuesSlider" type="range" min="3" max="50" step="1" value="20">
-            <small class="help-text">How many political issues each user has opinions about</small>
-        </div>
-        
-        <div class="control-group">
-            <label for="beta1Slider">User-level filtering effect (β₁): <span id="beta1Val">0.015</span></label>
-            <input id="beta1Slider" type="range" min="0" max="0.05" step="0.001" value="0.014">
-            <small class="help-text">How much other issues' extremity affects posting probability</small>
-        </div>
-        
-        <div class="control-group">
-            <label for="beta2Slider">Issue-level filtering effect (β₂): <span id="beta2Val">0.005</span></label>
-            <input id="beta2Slider" type="range" min="0" max="0.02" step="0.0005" value="0.0045">
-            <small class="help-text">How much this issue's extremity affects posting probability</small>
-        </div>
+            <!-- Control Panel -->
+            <div class="controls" id="controlPanel">
+                <div class="control-group button-group">
+                    <button id="sampleBtn" class="btn btn-primary">Sample User</button>
+                    <button id="autoBtn" class="btn btn-secondary">Start Auto Sample</button>
+                    <button id="resetBtn" class="btn btn-danger">Reset</button>
+                </div>
 
-        <div class="control-group button-group">
-            <button id="sampleBtn" class="btn btn-primary">Sample User</button>
-            <button id="autoBtn" class="btn btn-secondary">Start Auto Sample</button>
-            <button id="resetBtn" class="btn btn-danger">Reset</button>
-        </div>
-        
-        <div class="explanation">
-            <h3>How to Read This Visualization</h3>
-            <p>
-                Four stages show how filtering shapes visible and invisible attitudes:
-            </p>
-            <ul>
-                <li><strong>Stage 1 (Green):</strong> All users' true ideological means</li>
-                <li><strong>Stage 2 (Blue):</strong> Users who post at least one issue</li>
-                <li><strong>Stage 3 (Red):</strong> Individual attitudes that get posted (visible)</li>
-                <li><strong>Stage 4 (Gray):</strong> Individual attitudes that remain unposted (shadow)</li>
-            </ul>
-            <p>
-                Squares represent users' true means. When a user posts, their square drops to stage 2, 
-                then individual issue circles emanate and fall to stages 3 or 4 based on posting decisions.
-            </p>
-        </div>
-    </section>
+                <div class="control-group">
+                    <label for="issuesSlider">Number of issues per user: <span id="issuesVal">20</span></label>
+                    <input id="issuesSlider" type="range" min="3" max="50" step="1" value="20">
+                    <small class="help-text">How many political issues each user has opinions about</small>
+                </div>
+                
+                <div class="control-group">
+                    <label for="beta1Slider">User-level filtering effect (β₁): <span id="beta1Val">0.015</span></label>
+                    <input id="beta1Slider" type="range" min="0" max="0.05" step="0.001" value="0.014">
+                    <small class="help-text">How much other issues' extremity affects posting probability</small>
+                </div>
+                
+                <div class="control-group">
+                    <label for="beta2Slider">Issue-level filtering effect (β₂): <span id="beta2Val">0.005</span></label>
+                    <input id="beta2Slider" type="range" min="0" max="0.02" step="0.0005" value="0.0045">
+                    <small class="help-text">How much this issue's extremity affects posting probability</small>
+                </div>
+            </div>
+            
+            <!-- Explanation Panel -->
+            <div class="explanation">
+                <h3>How to Read This Visualization</h3>
+                <p>
+                    Four stages show how filtering shapes visible and invisible attitudes:
+                </p>
+                <ul>
+                    <li><strong>Stage 1 (Green):</strong> All users' true ideological means</li>
+                    <li><strong>Stage 2 (Blue):</strong> Users who post at least one issue</li>
+                    <li><strong>Stage 3 (Red):</strong> Individual attitudes that get posted (visible)</li>
+                    <li><strong>Stage 4 (Gray):</strong> Individual attitudes that remain unposted (shadow)</li>
+                </ul>
+                <p>
+                    Squares represent users' true means. When a user posts, their square drops to stage 2, 
+                    then individual issue circles emanate and fall to stages 3 or 4 based on posting decisions.
+                </p>
+            </div>
 
-    <!-- Visualization Canvas Container -->
-    <section class="visualization">
-        <div id="canvasContainer"></div>
-    </section>
+            <!-- Footer Content -->
+            <div class="sidebar-footer">
+                <p>
+                    This visualization demonstrates how self-selection (who chooses to post) and 
+                    self-censorship (which attitudes get shared) combine to create apparent polarization 
+                    in online discourse.
+                </p>
+            </div>
+        </aside>
 
-    <!-- Footer -->
-    <footer>
-        <p>
-            This visualization demonstrates how self-selection (who chooses to post) and 
-            self-censorship (which attitudes get shared) combine to create apparent polarization 
-            in online discourse.
-        </p>
-    </footer>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="visualization">
+                <div id="canvasContainer"></div>
+            </div>
+        </main>
+    </div>
 
     <!-- JavaScript Modules -->
     <script src="assets/js/config.js"></script>

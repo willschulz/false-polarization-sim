@@ -11,6 +11,13 @@ function setup() {
     const canvas = createCanvas(VISUAL_CONFIG.canvas.width, VISUAL_CONFIG.canvas.height);
     canvas.parent('canvasContainer');
     
+    // Set color mode and ensure pure white background
+    colorMode(RGB, 255);
+    background(255, 255, 255);
+    
+    // Force canvas style to white background
+    canvas.canvas.style.backgroundColor = '#ffffff';
+    
     // Initialize histogram objects
     initHistogram(histograms.trueAll);
     initHistogram(histograms.truePosting);
