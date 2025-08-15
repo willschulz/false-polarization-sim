@@ -1,0 +1,350 @@
+/* ===================================================================
+   Self-Censorship Visualization Dashboard Styles
+   ================================================================= */
+
+/* CSS Variables for consistent theming */
+:root {
+    --primary-color: #0066cc;
+    --secondary-color: #6c757d;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --light-bg: #fafafa;
+    --white: #ffffff;
+    --dark-text: #333333;
+    --muted-text: #666666;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 5px rgba(0,0,0,0.1);
+    --border-radius: 4px;
+}
+
+/* ===================================================================
+   Base Styles
+   ================================================================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: var(--dark-text);
+}
+
+/* ===================================================================
+   Header Styles
+   ================================================================= */
+header {
+    background: linear-gradient(135deg, var(--primary-color), #004499);
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+    font-weight: 300;
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ===================================================================
+   Control Panel Styles
+   ================================================================= */
+.controls {
+    padding: 2rem;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    margin: 0 0 1rem 0;
+    max-width: 1200px;
+    margin: 0 auto 1rem auto;
+}
+
+.control-group {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: #f8f9fa;
+}
+
+.control-group:last-of-type {
+    margin-bottom: 0;
+}
+
+/* Form Controls */
+label {
+    font-size: 1rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+}
+
+input[type="range"] {
+    width: 100%;
+    max-width: 400px;
+    height: 6px;
+    background: #ddd;
+    border-radius: 3px;
+    outline: none;
+    margin: 0.5rem 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.help-text {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted-text);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* ===================================================================
+   Button Styles
+   ================================================================= */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* ===================================================================
+   Explanation Panel
+   ================================================================= */
+.explanation {
+    background: white;
+    border-left: 4px solid var(--primary-color);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.explanation h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.explanation ul {
+    padding-left: 1.5rem;
+}
+
+.explanation li {
+    margin-bottom: 0.5rem;
+}
+
+.explanation strong {
+    font-weight: 600;
+}
+
+/* ===================================================================
+   Visualization Styles
+   ================================================================= */
+.visualization {
+    background: var(--white);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    border-radius: var(--border-radius);
+}
+
+#canvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+/* Canvas styling will be handled by p5.js, but we can add container styles */
+canvas {
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ===================================================================
+   Footer Styles
+   ================================================================= */
+footer {
+    background: #2c3e50;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+footer p {
+    margin: 0;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+/* ===================================================================
+   Responsive Design
+   ================================================================= */
+@media (max-width: 768px) {
+    header {
+        padding: 1.5rem 1rem;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+    
+    .controls {
+        padding: 1rem;
+        margin: 0 0.5rem 1rem 0.5rem;
+    }
+    
+    .control-group {
+        padding: 0.75rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .visualization {
+        margin: 0 0.5rem 2rem 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+    }
+    
+    input[type="range"] {
+        max-width: 100%;
+    }
+}
+
+/* ===================================================================
+   Utility Classes
+   ================================================================= */
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--muted-text);
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+/* ===================================================================
+   Animation Classes (for future enhancements)
+   ================================================================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+} 

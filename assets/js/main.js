@@ -1,0 +1,91 @@
+/**
+ * Main application initialization and p5.js setup
+ * Self-Censorship Multi-Stage Visualization Dashboard
+ */
+
+/**
+ * p5.js setup function - called once when the page loads
+ */
+function setup() {
+    // Create canvas and attach to container
+    const canvas = createCanvas(VISUAL_CONFIG.canvas.width, VISUAL_CONFIG.canvas.height);
+    canvas.parent('canvasContainer');
+    
+    // Initialize histogram objects
+    initHistogram(histograms.trueAll);
+    initHistogram(histograms.truePosting);
+    initHistogram(histograms.postedAttitudes);
+    initHistogram(histograms.shadowAttitudes);
+    
+    // Calculate panel positions based on canvas height
+    const panelHeight = height / 4;
+    HISTOGRAM_CONFIG.panels = [
+        { baseY: panelHeight - 50 },
+        { baseY: 2 * panelHeight - 50 },
+        { baseY: 3 * panelHeight - 50 },
+        { baseY: 4 * panelHeight - 50 }
+    ];
+    
+    // Set up text rendering
+    textAlign(CENTER, CENTER);
+    textSize(12);
+    
+    // Initialize the static distribution for the top panel
+    populateStaticDistribution(UI_CONFIG.staticSample.nUsers);
+    
+    // Initialize UI controls
+    initControls();
+    updateDisplayValues();
+    
+    console.log('Self-Censorship Visualization initialized');
+    console.log('Model parameters:', MODEL_CONFIG);
+}
+
+// Note: draw() function is defined in visualization.js
+
+/**
+ * Window load event - ensure DOM is ready before initializing p5.js
+ */
+window.addEventListener('load', () => {
+    console.log('Dashboard loaded successfully');
+});
+
+/**
+ * Handle window resize (optional enhancement)
+ */
+window.addEventListener('resize', () => {
+    // Could add responsive canvas resizing here if needed
+});
+
+/**
+ * Keyboard shortcuts (optional enhancement)
+ */
+function keyPressed() {
+    switch (key) {
+        case 's':
+        case 'S':
+            sampleUser();
+            break;
+        case 'r':
+        case 'R':
+            resetVisualization();
+            break;
+        case 'a':
+        case 'A':
+            const autoBtn = document.getElementById('autoBtn');
+            toggleAutoSampling(autoBtn);
+            break;
+    }
+}
+
+/**
+ * Export functions for debugging in console
+ */
+window.debugAPI = {
+    sampleUser,
+    resetVisualization,
+    MODEL_CONFIG,
+    HISTOGRAM_CONFIG,
+    balls: () => balls,
+    histograms: () => histograms
+};
