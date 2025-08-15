@@ -66,7 +66,7 @@ const VISUAL_CONFIG = {
     
     // Ball/shape appearance
     shapes: {
-        size: 8,
+        size: 5,
         animationSpeed: 4,
         easingFactor: 0.05
     },
@@ -94,7 +94,7 @@ const VISUAL_CONFIG = {
  */
 const HISTOGRAM_CONFIG = {
     // Number of bins for histogram discretization
-    nBins: 20,
+    nBins: 100,
     
     // Range of values displayed on x-axis (ideology scale)
     // Symmetric around zero spanning 6 units in each direction
@@ -120,7 +120,7 @@ const HISTOGRAM_CONFIG = {
 const UI_CONFIG = {
     // Auto-sampling settings
     autoSampling: {
-        defaultSpeed: 300,  // Milliseconds between automatic samples
+        defaultSpeed: 10,  // Milliseconds between automatic samples
         enabled: false
     },
     

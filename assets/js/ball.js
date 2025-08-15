@@ -13,7 +13,7 @@ class Ball {
         // Visual properties
         this.shape = shape; // 'square' or 'circle'
         this.color = color;
-        this.size = 8;
+        this.size = VISUAL_CONFIG.shapes.size;
         
         // Data properties
         this.value = value;
