@@ -81,7 +81,7 @@ const VISUAL_CONFIG = {
         
         // UI colors
         baseline: [0, 0, 0],              // Black for baselines
-        stdMarkers: [150, 150, 150]       // Gray for standard deviation markers
+        stdMarkers: [0, 0, 0]             // Black for standard deviation markers
     }
 };
 

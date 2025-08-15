@@ -155,7 +155,7 @@ function drawStdMarkers(panelIdx) {
     const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const markers = [0, -1, 1, -2, 2];
     
-    stroke(150);
+    stroke(0);
     strokeWeight(1);
     for (const m of markers) {
         if (m >= HISTOGRAM_CONFIG.range[0] && m <= HISTOGRAM_CONFIG.range[1]) {
