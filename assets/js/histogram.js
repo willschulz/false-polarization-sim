@@ -90,24 +90,31 @@ function drawAuthorsOverlay(panelIdx) {
     const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const political = histograms.tweetAuthorsPolitical;
     const nonPolitical = histograms.tweetAuthorsNonPolitical;
-    const maxCount = Math.max(...political.counts, ...nonPolitical.counts, 1);
+    const independent = true; // hard-coded independent scaling for testing
+    const maxCount = independent
+        ? Math.max(Math.max(...political.counts, 1), Math.max(...nonPolitical.counts, 1))
+        : Math.max(...political.counts, ...nonPolitical.counts, 1);
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
 
     rectMode(CORNER);
     // Draw non-political first (gray)
     noStroke();
-    fill(color(128, 128, 128, 140));
+    fill(color(128, 128, 128, 160));
     for (let i = 0; i < nonPolitical.counts.length; i++) {
-        const barH = (nonPolitical.counts[i] / maxCount) * barMaxHeight;
+        const countMax = independent ? Math.max(...nonPolitical.counts, 1) : maxCount;
+        const barH = (nonPolitical.counts[i] / countMax) * barMaxHeight;
         const x = i * binPixelW;
         rect(x, baseY, binPixelW - 1, -barH);
     }
 
     // Draw political on top (black)
-    fill(color(0, 0, 0, 170));
+    fill(color(0, 0, 0, 160));
     for (let i = 0; i < political.counts.length; i++) {
-        const barH = (political.counts[i] / maxCount) * barMaxHeight;
+        const countMax = independent ? Math.max(...political.counts, 1) : maxCount;
+        const barH = (political.counts[i] / countMax) * barMaxHeight;
         const x = i * binPixelW;
+        // Overlap handling: lighten black where it overlaps gray using simple alpha blending
+        // Draw gray again clipped would be heavy; instead, draw black with lower alpha to reveal gray beneath
         rect(x, baseY, binPixelW - 1, -barH);
     }
 
@@ -207,7 +214,10 @@ function drawAttitudesOverlay(panelIdx) {
     const baseY = panel.baseY;
     const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const [posted, shadow] = [histograms.postedAttitudes, histograms.shadowAttitudes];
-    const maxCount = Math.max(...posted.counts, ...shadow.counts, 1);
+    const independent = true; // hard-coded independent scaling for testing
+    const maxCount = independent
+        ? Math.max(Math.max(...posted.counts, 1), Math.max(...shadow.counts, 1))
+        : Math.max(...posted.counts, ...shadow.counts, 1);
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
     
     rectMode(CORNER);
@@ -215,19 +225,22 @@ function drawAttitudesOverlay(panelIdx) {
     noStroke();
     fill(color(128, 128, 128, 140));
     for (let i = 0; i < shadow.counts.length; i++) {
-        const barH = (shadow.counts[i] / maxCount) * barMaxHeight;
+        const countMax = independent ? Math.max(...shadow.counts, 1) : maxCount;
+        const barH = (shadow.counts[i] / countMax) * barMaxHeight;
         const x = i * binPixelW;
         const yTop = baseY - barH;
         const r = Math.min(6, barH); // rounded top corners only
         rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
     // Draw posted on top (black)
-    fill(color(0, 0, 0, 170));
+    fill(color(0, 0, 0, 160));
     for (let i = 0; i < posted.counts.length; i++) {
-        const barH = (posted.counts[i] / maxCount) * barMaxHeight;
+        const countMax = independent ? Math.max(...posted.counts, 1) : maxCount;
+        const barH = (posted.counts[i] / countMax) * barMaxHeight;
         const x = i * binPixelW;
         const yTop = baseY - barH;
         const r = Math.min(6, barH);
+        // Overlap handling: draw black with lower alpha so gray remains visible under overlaps
         rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
     

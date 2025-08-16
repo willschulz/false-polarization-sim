@@ -48,6 +48,8 @@ function initControls() {
     document.getElementById('autoBtn').addEventListener('click', (e) => {
         toggleAutoSampling(e.target);
     });
+
+    // Scaling UI removed; forcing independent scaling in rendering for testing
 }
 
 /**
