@@ -21,20 +21,20 @@ function mapValueToX(val) {
 function drawAttitudeSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[1];
     const panelBelow = HISTOGRAM_CONFIG.panels[2];
-    const filterHeight = 20; // px
+    const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
     const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
     const yTop = yCenter - filterHeight / 2;
 
     noStroke();
-    fill(180, 180, 180); // gray band
+    fill(180, 180, 180, 150); // semi-transparent gray band
     rect(0, yTop, width, filterHeight);
 
-    // Label: white, bold, left-aligned inside the band
+    // Label: white, bold, right-aligned inside the band
     fill(255);
-    textAlign(LEFT, CENTER);
+    textAlign(RIGHT, CENTER);
     push();
     textStyle(BOLD);
-    text('ATTITUDE SELECTION', 8, yTop + filterHeight / 2);
+    text('ATTITUDE SELECTION', width - 8, yTop + filterHeight / 2);
     pop();
     textAlign(CENTER, CENTER);
 }
@@ -45,20 +45,20 @@ function drawAttitudeSelectionFilter() {
 function drawUserSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[0];
     const panelBelow = HISTOGRAM_CONFIG.panels[1];
-    const filterHeight = 20; // px
+    const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
     const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
     const yTop = yCenter - filterHeight / 2;
 
     noStroke();
-    fill(180, 180, 180); // gray band
+    fill(180, 180, 180, 150); // semi-transparent gray band
     rect(0, yTop, width, filterHeight);
 
-    // Label: white, bold, left-aligned
+    // Label: white, bold, right-aligned
     fill(255);
-    textAlign(LEFT, CENTER);
+    textAlign(RIGHT, CENTER);
     push();
     textStyle(BOLD);
-    text('USER SELECTION', 8, yTop + filterHeight / 2);
+    text('USER SELECTION', width - 8, yTop + filterHeight / 2);
     pop();
     textAlign(CENTER, CENTER);
 }
@@ -67,22 +67,45 @@ function drawUserSelectionFilter() {
  * Main drawing function called every frame by p5.js
  */
 function draw() {
-    background(255, 255, 255);
+    // Transparent background; draw against container behind the canvas
+    clear();
     // Ensure panels are initialized even if setup hasn't run yet for some reason
     if (!HISTOGRAM_CONFIG.panels || HISTOGRAM_CONFIG.panels.length < 3) {
-        const panelHeight = height / 3;
-        HISTOGRAM_CONFIG.panels = [
-            { baseY: panelHeight - 50 },
-            { baseY: 2 * panelHeight - 50 },
-            { baseY: 3 * panelHeight - 50 }
+        const weights = (HISTOGRAM_CONFIG.visual.panelHeightWeights && HISTOGRAM_CONFIG.visual.panelHeightWeights.length === 3)
+            ? HISTOGRAM_CONFIG.visual.panelHeightWeights
+            : [1, 1, 1];
+        const sumW = weights[0] + weights[1] + weights[2];
+        const panelHeights = [
+            (weights[0] / sumW) * height,
+            (weights[1] / sumW) * height,
+            (weights[2] / sumW) * height
         ];
+        const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+        const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
+        const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
+        const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
+        const bottomLabelPad = HISTOGRAM_CONFIG.visual.bottomPanelLabelPadding || 0;
+        let offsetY = 0;
+        HISTOGRAM_CONFIG.panels = [0, 1, 2].map((idx) => {
+            const head = idx === 0 ? topHeadroom : defaultHeadroom;
+            let baseY;
+            if (idx === 2) {
+                baseY = offsetY + panelHeights[idx] - bottomPadding - bottomLabelPad;
+            } else {
+                baseY = offsetY + head + maxBar;
+            }
+            offsetY += panelHeights[idx];
+            return { baseY };
+        });
     }
     
-    // Draw panel dividers (3 panels)
-    const ph = height / 3;
-    stroke(230);
-    line(0, ph, width, ph);
-    line(0, 2 * ph, width, 2 * ph);
+    // Optional panel divider lines
+    if (HISTOGRAM_CONFIG.visual.showPanelDividers) {
+        const ph = height / 3;
+        stroke(230);
+        line(0, ph, width, ph);
+        line(0, 2 * ph, width, 2 * ph);
+    }
     
     // Update and draw balls
     for (let i = balls.length - 1; i >= 0; i--) {

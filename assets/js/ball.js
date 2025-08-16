@@ -94,7 +94,7 @@ class Ball {
             if (this.isPolitical !== undefined) {
                 const panelAbove = HISTOGRAM_CONFIG.panels[0];
                 const panelBelow = HISTOGRAM_CONFIG.panels[1];
-                const filterHeight = 20;
+                const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight;
                 const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
                 const yTop = yCenter - filterHeight / 2;
                 if (this.y >= yTop + filterHeight) {
@@ -111,7 +111,7 @@ class Ball {
             if (this.isTweetTopic) {
                 const panelAbove = HISTOGRAM_CONFIG.panels[1];
                 const panelBelow = HISTOGRAM_CONFIG.panels[2];
-                const filterHeight = 20;
+                const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight;
                 const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
                 const yTop = yCenter - filterHeight / 2;
                 if (this.y >= yTop + filterHeight) {

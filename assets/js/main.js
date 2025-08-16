@@ -15,8 +15,17 @@ function setup() {
     colorMode(RGB, 255);
     background(255, 255, 255);
     
-    // Force canvas style to white background
-    canvas.canvas.style.backgroundColor = '#ffffff';
+    // Apply visualization column styling from config
+    const columnEl = document.getElementById('vizColumn');
+    if (columnEl) {
+        const bg = (VISUAL_CONFIG.column && VISUAL_CONFIG.column.backgroundColor) || '#ffffff';
+        columnEl.style.backgroundColor = bg;
+        if (VISUAL_CONFIG.column && VISUAL_CONFIG.column.widthMatchesCanvas) {
+            columnEl.style.width = `${VISUAL_CONFIG.canvas.width}px`;
+        }
+    }
+    // Make canvas background transparent
+    canvas.canvas.style.backgroundColor = 'transparent';
     
     // Initialize histogram objects
     initHistogram(histograms.trueAll);
@@ -26,12 +35,33 @@ function setup() {
     initHistogram(histograms.shadowAttitudes);
     
     // Calculate panel positions based on canvas height (3 panels)
-    const panelHeight = height / 3;
-    HISTOGRAM_CONFIG.panels = [
-        { baseY: panelHeight - 50 },                // Panel 1: Normal population
-        { baseY: 2 * panelHeight - 50 },            // Panel 2: Authors overlay (political vs non-political)
-        { baseY: 3 * panelHeight - 50 }             // Panel 3: Attitudes overlay
+    const weights = (HISTOGRAM_CONFIG.visual.panelHeightWeights && HISTOGRAM_CONFIG.visual.panelHeightWeights.length === 3)
+        ? HISTOGRAM_CONFIG.visual.panelHeightWeights
+        : [1, 1, 1];
+    const sumW = weights[0] + weights[1] + weights[2];
+    const panelHeights = [
+        (weights[0] / sumW) * height,
+        (weights[1] / sumW) * height,
+        (weights[2] / sumW) * height
     ];
+    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
+    const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
+    const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
+    const bottomLabelPad = HISTOGRAM_CONFIG.visual.bottomPanelLabelPadding || 0;
+    let offsetY = 0;
+    HISTOGRAM_CONFIG.panels = [0, 1, 2].map((idx) => {
+        const head = idx === 0 ? topHeadroom : defaultHeadroom;
+        let baseY;
+        if (idx === 2) {
+            // Bottom panel: anchor baseline near bottom but leave space for label text
+            baseY = offsetY + panelHeights[idx] - bottomPadding - bottomLabelPad;
+        } else {
+            baseY = offsetY + head + maxBar;
+        }
+        offsetY += panelHeights[idx];
+        return { baseY };
+    });
     
     // Set up text rendering
     textAlign(CENTER, CENTER);

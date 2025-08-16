@@ -47,7 +47,15 @@ const MODEL_CONFIG = {
 const VISUAL_CONFIG = {
     canvas: {
         width: 700,
-        height: 800
+        height: 1200
+    },
+    
+    // Visualization column container appearance
+    column: {
+        // Background color for the full-height visualization column
+        backgroundColor: '#ffffff',
+        // If true, column width will match canvas width
+        widthMatchesCanvas: true
     },
     
     // Ball/shape appearance
@@ -88,8 +96,16 @@ const HISTOGRAM_CONFIG = {
     
     // Visual properties
     visual: {
-        maxBarHeight: 80,    // Maximum pixel height for histogram bars
-        panelSpacing: null   // Will be calculated based on canvas height
+        maxBarHeight: 160,    // Maximum pixel height for histogram bars
+        selectionFilterHeight: 60, // Height of the USER/ATTITUDE selection bands
+        panelTopPadding: 12,  // Pixels of headroom above bars within each panel (default for panels 2 and 3)
+        topPanelTopPadding: 4, // Tighter headroom for top panel specifically
+        bottomPanelBottomPadding: 4, // Reduce whitespace at bottom of bottom panel
+        bottomPanelLabelPadding: 26, // Space reserved for bottom panel label below baseline
+        // Relative heights for the three panels (top, middle, bottom). Will be normalized.
+        panelHeightWeights: [0.32, 0.40, 0.28],
+        panelSpacing: null,   // Will be calculated based on canvas height
+        showPanelDividers: false // Toggle thin divider lines between panels
     },
     
     // Panel configuration (will be populated in main.js based on canvas)

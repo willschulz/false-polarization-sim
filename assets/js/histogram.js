@@ -65,9 +65,9 @@ function drawHistogram(histName, panelIdx) {
         rect(x, baseY, binPixelW - 1, -barH);
     }
     
-    // Draw baseline and label
+    // Draw baseline slightly below bars to avoid covering their bottoms
     stroke(0);
-    line(0, baseY, width, baseY);
+    line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
     
@@ -120,7 +120,7 @@ function drawAuthorsOverlay(panelIdx) {
 
     // Baseline and unified label
     stroke(0);
-    line(0, baseY, width, baseY);
+    line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
     text('Tweet authors: political (black) vs non-political (gray)', width / 2, baseY + 20);
@@ -198,9 +198,9 @@ function drawNormalDensity(panelIdx) {
     }
     endShape();
     
-    // Draw baseline and label
+    // Draw baseline slightly below area fill to avoid covering its bottom edge
     stroke(0);
-    line(0, baseY, width, baseY);
+    line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
     text('All users: true means', width / 2, baseY + 20);
@@ -244,9 +244,9 @@ function drawAttitudesOverlay(panelIdx) {
         rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
     
-    // Baseline and unified label
+    // Baseline and unified label (1px below bars)
     stroke(0);
-    line(0, baseY, width, baseY);
+    line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
     text('Attitudes: posted (black) vs shadow (gray)', width / 2, baseY + 20);
