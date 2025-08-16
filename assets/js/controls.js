@@ -45,7 +45,8 @@ function initControls() {
         const seNum = (typeof se === 'number' && isFinite(se) && se > 0) ? se : 0.001;
         const min = center - 2 * seNum;
         const max = center + 2 * seNum;
-        const step = (max - min) / 100; // 100 steps across ±2SE
+        //const step = (max - min) / 100; // 100 steps across ±2SE
+        const step = (max - min) / 4;
         sliderEl.min = min.toString();
         sliderEl.max = max.toString();
         sliderEl.step = step.toString();
