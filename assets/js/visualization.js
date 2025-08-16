@@ -22,7 +22,9 @@ function drawAttitudeSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[1];
     const panelBelow = HISTOGRAM_CONFIG.panels[2];
     const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
-    const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+    // Center between bottom of preceding x-axis and top of SD markers of following panel
+    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const yCenter = (panelAbove.baseY + (panelBelow.baseY - maxBar)) / 2;
     const yTop = yCenter - filterHeight / 2;
 
     noStroke();
@@ -46,7 +48,9 @@ function drawUserSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[0];
     const panelBelow = HISTOGRAM_CONFIG.panels[1];
     const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
-    const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+    // Center between bottom of preceding x-axis and top of SD markers of following panel
+    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const yCenter = (panelAbove.baseY + (panelBelow.baseY - maxBar)) / 2;
     const yTop = yCenter - filterHeight / 2;
 
     noStroke();
@@ -71,32 +75,20 @@ function draw() {
     clear();
     // Ensure panels are initialized even if setup hasn't run yet for some reason
     if (!HISTOGRAM_CONFIG.panels || HISTOGRAM_CONFIG.panels.length < 3) {
-        const weights = (HISTOGRAM_CONFIG.visual.panelHeightWeights && HISTOGRAM_CONFIG.visual.panelHeightWeights.length === 3)
-            ? HISTOGRAM_CONFIG.visual.panelHeightWeights
-            : [1, 1, 1];
-        const sumW = weights[0] + weights[1] + weights[2];
-        const panelHeights = [
-            (weights[0] / sumW) * height,
-            (weights[1] / sumW) * height,
-            (weights[2] / sumW) * height
-        ];
         const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
         const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
         const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
         const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
         const bottomLabelPad = HISTOGRAM_CONFIG.visual.bottomPanelLabelPadding || 0;
-        let offsetY = 0;
-        HISTOGRAM_CONFIG.panels = [0, 1, 2].map((idx) => {
-            const head = idx === 0 ? topHeadroom : defaultHeadroom;
-            let baseY;
-            if (idx === 2) {
-                baseY = offsetY + panelHeights[idx] - bottomPadding - bottomLabelPad;
-            } else {
-                baseY = offsetY + head + maxBar;
-            }
-            offsetY += panelHeights[idx];
-            return { baseY };
-        });
+        const baseY1 = topHeadroom + maxBar;
+        const baseY3 = height - (bottomPadding + bottomLabelPad);
+        const gap = (baseY3 - baseY1) / 2;
+        const baseY2 = baseY1 + gap;
+        HISTOGRAM_CONFIG.panels = [
+            { baseY: baseY1 },
+            { baseY: baseY2 },
+            { baseY: baseY3 }
+        ];
     }
     
     // Optional panel divider lines

@@ -54,11 +54,23 @@ function drawHistogram(histName, panelIdx) {
         const x = i * binPixelW;
         
         let col;
-        if (histName === 'trueAll') col = color(0, 128, 0, 180);
-        else if (histName === 'tweetAuthorsPolitical') col = color(0, 102, 204, 180);
-        else if (histName === 'tweetAuthorsNonPolitical') col = color(150, 150, 255, 180);
-        else if (histName === 'postedAttitudes') col = color(220, 0, 0, 180);
-        else col = color(128, 128, 128, 180);
+        if (histName === 'trueAll') {
+            col = color(0, 128, 0, 180);
+        } else if (histName === 'tweetAuthorsPolitical') {
+            // Political posts: #f59e0b, alpha 0.7 (~178)
+            col = color(245, 158, 11, 178);
+        } else if (histName === 'tweetAuthorsNonPolitical') {
+            // Non-political posts: #1f3a8a, alpha 0.7 (~178)
+            col = color(31, 58, 138, 178);
+        } else if (histName === 'postedAttitudes') {
+            // Visible attitudes (D): #ef6351, alpha 0.7 (~178)
+            col = color(239, 99, 81, 178);
+        } else if (histName === 'shadowAttitudes') {
+            // Invisible attitudes (C): #007f5f, alpha 0.7 (~178)
+            col = color(0, 127, 95, 178);
+        } else {
+            col = color(128, 128, 128, 180);
+        }
         
         noStroke();
         fill(col);
@@ -97,9 +109,9 @@ function drawAuthorsOverlay(panelIdx) {
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
 
     rectMode(CORNER);
-    // Draw non-political first (gray)
+    // Draw non-political first (blue #1f3a8a)
     noStroke();
-    fill(color(128, 128, 128, 160));
+    fill(color(31, 58, 138, 178));
     for (let i = 0; i < nonPolitical.counts.length; i++) {
         const countMax = independent ? Math.max(...nonPolitical.counts, 1) : maxCount;
         const barH = (nonPolitical.counts[i] / countMax) * barMaxHeight;
@@ -107,8 +119,8 @@ function drawAuthorsOverlay(panelIdx) {
         rect(x, baseY, binPixelW - 1, -barH);
     }
 
-    // Draw political on top (black)
-    fill(color(0, 0, 0, 160));
+    // Draw political on top (orange #f59e0b)
+    fill(color(245, 158, 11, 178));
     for (let i = 0; i < political.counts.length; i++) {
         const countMax = independent ? Math.max(...political.counts, 1) : maxCount;
         const barH = (political.counts[i] / countMax) * barMaxHeight;
@@ -123,7 +135,26 @@ function drawAuthorsOverlay(panelIdx) {
     line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
-    text('Tweet authors: political (black) vs non-political (gray)', width / 2, baseY + 20);
+    text('Ideological Positions of Tweet Authors (Political and Non-Political)', width / 2, baseY + 20);
+
+    // Legend on left (squares)
+    push();
+    const legendX = 10;
+    const legendYTop = baseY - barMaxHeight + 16;
+    rectMode(CORNER);
+    noStroke();
+    // Political (orange #f59e0b)
+    fill(color(245, 158, 11, 178));
+    rect(legendX, legendYTop - 6, 12, 12);
+    // Non-political (blue #1f3a8a) with extra vertical spacing
+    fill(color(31, 58, 138, 178));
+    rect(legendX, legendYTop + 8, 12, 12);
+    // Labels
+    fill(0);
+    textAlign(LEFT, CENTER);
+    text('Political', legendX + 18, legendYTop);
+    text('Non-political', legendX + 18, legendYTop + 14);
+    pop();
 }
 
 /**
@@ -221,9 +252,9 @@ function drawAttitudesOverlay(panelIdx) {
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
     
     rectMode(CORNER);
-    // Draw shadow first (gray)
+    // Draw shadow first (invisible attitudes C: #007f5f)
     noStroke();
-    fill(color(128, 128, 128, 140));
+    fill(color(0, 127, 95, 178));
     for (let i = 0; i < shadow.counts.length; i++) {
         const countMax = independent ? Math.max(...shadow.counts, 1) : maxCount;
         const barH = (shadow.counts[i] / countMax) * barMaxHeight;
@@ -232,8 +263,8 @@ function drawAttitudesOverlay(panelIdx) {
         const r = Math.min(6, barH); // rounded top corners only
         rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
-    // Draw posted on top (black)
-    fill(color(0, 0, 0, 160));
+    // Draw posted on top (visible attitudes D: #ef6351)
+    fill(color(239, 99, 81, 178));
     for (let i = 0; i < posted.counts.length; i++) {
         const countMax = independent ? Math.max(...posted.counts, 1) : maxCount;
         const barH = (posted.counts[i] / countMax) * barMaxHeight;
@@ -249,7 +280,25 @@ function drawAttitudesOverlay(panelIdx) {
     line(0, baseY + 1, width, baseY + 1);
     noStroke();
     fill(0);
-    text('Attitudes: posted (black) vs shadow (gray)', width / 2, baseY + 20);
+    text('Ideological Positions of Attitudes (Posted and Unposted)', width / 2, baseY + 20);
+
+    // Legend on left (circles)
+    push();
+    const legendX = 10;
+    const legendYTop = baseY - barMaxHeight + 16;
+    noStroke();
+    // Visible (topic) D: #ef6351
+    fill(color(239, 99, 81, 178));
+    circle(legendX + 6, legendYTop, 12);
+    // Invisible (shadow) C: #007f5f with extra vertical spacing
+    fill(color(0, 127, 95, 178));
+    circle(legendX + 6, legendYTop + 14, 12);
+    // Labels
+    fill(0);
+    textAlign(LEFT, CENTER);
+    text('Posted', legendX + 18, legendYTop);
+    text('Unposted', legendX + 18, legendYTop + 14);
+    pop();
 }
 
 /**

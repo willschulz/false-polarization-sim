@@ -47,7 +47,7 @@ const MODEL_CONFIG = {
 const VISUAL_CONFIG = {
     canvas: {
         width: 700,
-        height: 1200
+        height: 1000
     },
     
     // Visualization column container appearance

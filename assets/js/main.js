@@ -35,33 +35,21 @@ function setup() {
     initHistogram(histograms.shadowAttitudes);
     
     // Calculate panel positions based on canvas height (3 panels)
-    const weights = (HISTOGRAM_CONFIG.visual.panelHeightWeights && HISTOGRAM_CONFIG.visual.panelHeightWeights.length === 3)
-        ? HISTOGRAM_CONFIG.visual.panelHeightWeights
-        : [1, 1, 1];
-    const sumW = weights[0] + weights[1] + weights[2];
-    const panelHeights = [
-        (weights[0] / sumW) * height,
-        (weights[1] / sumW) * height,
-        (weights[2] / sumW) * height
-    ];
     const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
     const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
     const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
     const bottomLabelPad = HISTOGRAM_CONFIG.visual.bottomPanelLabelPadding || 0;
-    let offsetY = 0;
-    HISTOGRAM_CONFIG.panels = [0, 1, 2].map((idx) => {
-        const head = idx === 0 ? topHeadroom : defaultHeadroom;
-        let baseY;
-        if (idx === 2) {
-            // Bottom panel: anchor baseline near bottom but leave space for label text
-            baseY = offsetY + panelHeights[idx] - bottomPadding - bottomLabelPad;
-        } else {
-            baseY = offsetY + head + maxBar;
-        }
-        offsetY += panelHeights[idx];
-        return { baseY };
-    });
+    // Equal spacing between x-axes while respecting top and bottom paddings
+    const baseY1 = topHeadroom + maxBar;
+    const baseY3 = height - (bottomPadding + bottomLabelPad);
+    const gap = (baseY3 - baseY1) / 2;
+    const baseY2 = baseY1 + gap;
+    HISTOGRAM_CONFIG.panels = [
+        { baseY: baseY1 },
+        { baseY: baseY2 },
+        { baseY: baseY3 }
+    ];
     
     // Set up text rendering
     textAlign(CENTER, CENTER);
