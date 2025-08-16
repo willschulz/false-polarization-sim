@@ -36,14 +36,16 @@
                 
 
                 <div class="control-group">
-                    <label>Political tweeting model (o_mean_political ~ issue_irt_scale + issue_irt_scale^2)</label>
+                    <label>Political tweeting model</label>
+                    <small class="help-text">Adjust political tweeting probability weights.</small>
+                    <p>o_mean_political ~ issue_irt_scale + issue_irt_scale^2</p>
                     <div>
                         <label>Linear b1: <span id="lmLinearVal">0.0000</span></label>
                         <input id="lmLinearSlider" type="range" min="-1" max="1" step="0.0005" value="0">
                         <div class="slider-scale" id="lmLinearScale">
                             <span class="tick">-2</span>
                             <span class="tick">-1</span>
-                            <span class="tick">est</span>
+                            <span class="tick">ESTIMATE</span>
                             <span class="tick">+1</span>
                             <span class="tick">+2</span>
                         </div>
@@ -54,23 +56,24 @@
                         <div class="slider-scale" id="lmQuadraticScale">
                             <span class="tick">-2</span>
                             <span class="tick">-1</span>
-                            <span class="tick">est</span>
+                            <span class="tick">ESTIMATE</span>
                             <span class="tick">+1</span>
                             <span class="tick">+2</span>
                         </div>
                     </div>
-                    <small class="help-text">Adjust coefficients used for political tweeting probability if a model is loaded.</small>
                 </div>
 
                 <div class="control-group">
-                    <label>Issue selection model (prevalence_score ~ issue_specific_conservatism + issue_specific_conservatism^2)</label>
+                    <label>Issue selection model</label>
+                    <small class="help-text">Adjust attidue selection weights for the model:</small>
+                    <p>prevalence_score ~ issue_specific_conservatism + issue_specific_conservatism^2</p>
                     <div>
                         <label>Linear c1: <span id="issueSelLinearVal">0.000000</span></label>
                         <input id="issueSelLinearSlider" type="range" min="-1" max="1" step="0.0005" value="0">
                         <div class="slider-scale" id="issueSelLinearScale">
                             <span class="tick">-2</span>
                             <span class="tick">-1</span>
-                            <span class="tick">est</span>
+                            <span class="tick">ESTIMATE</span>
                             <span class="tick">+1</span>
                             <span class="tick">+2</span>
                         </div>
@@ -81,12 +84,11 @@
                         <div class="slider-scale" id="issueSelQuadraticScale">
                             <span class="tick">-2</span>
                             <span class="tick">-1</span>
-                            <span class="tick">est</span>
+                            <span class="tick">ESTIMATE</span>
                             <span class="tick">+1</span>
                             <span class="tick">+2</span>
                         </div>
                     </div>
-                    <small class="help-text">Adjust coefficients used for topic selection weights if a model is loaded.</small>
                 </div>
 
                 <div class="control-group">
