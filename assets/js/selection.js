@@ -87,7 +87,8 @@ function loadIssueSelectionModel() {
             console.log('Loaded issue selection LM model coefficients');
             try {
                 const coefs = json.coefficients || {};
-                window.dispatchEvent(new CustomEvent('issueSelectionModelLoaded', { detail: { coefs } }));
+                const se = json.standard_errors || json.se || {};
+                window.dispatchEvent(new CustomEvent('issueSelectionModelLoaded', { detail: { coefs, se } }));
             } catch (_) {}
         })
         .catch((err) => {
@@ -133,8 +134,9 @@ function loadIssueIrtScaleModel() {
             console.log('Loaded issue_irt_scale LM model coefficients');
             try {
                 const coefs = json.coefficients || {};
+                const se = json.standard_errors || json.se || {};
                 // Notify UI listeners so controls can initialize to model values
-                window.dispatchEvent(new CustomEvent('issueIrtModelLoaded', { detail: { coefs } }));
+                window.dispatchEvent(new CustomEvent('issueIrtModelLoaded', { detail: { coefs, se } }));
             } catch (e) {
                 // no-op if window not available
             }

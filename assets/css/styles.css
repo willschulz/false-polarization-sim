@@ -140,6 +140,20 @@ input[type="range"] {
     -webkit-appearance: none;
 }
 
+/* Slider scale annotations (-2, -1, point estimate, +1, +2) */
+.slider-scale {
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+    width: 100%;
+    font-size: 0.8rem;
+    color: var(--muted-text);
+    margin-top: 0.25rem;
+}
+.slider-scale .tick {
+    flex: 0 0 auto;
+}
+
 input[type="range"]:focus {
     outline: none;
     box-shadow: none;
@@ -301,12 +315,12 @@ input[type="range"]::-moz-range-thumb:hover {
    Visualization Styles
    ================================================================= */
 .visualization {
-    background: #ffffff !important;
-    padding: 2rem;
-    box-shadow: var(--shadow);
-    margin: 2rem;
-    border-radius: var(--border-radius);
-    height: calc(100vh - 4rem);
+    background: transparent !important;
+    padding: 0;
+    box-shadow: none;
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -318,7 +332,7 @@ input[type="range"]::-moz-range-thumb:hover {
     align-items: center;
     width: 100%;
     height: 100%;
-    background: #ffffff !important;
+    background: transparent !important;
 }
 
 /* Canvas styling will be handled by p5.js, but we can add container styles */
@@ -362,7 +376,7 @@ canvas {
     .visualization {
         height: auto;
         min-height: 60vh;
-        margin: 1rem;
+        margin: 0;
     }
 }
 
@@ -401,8 +415,8 @@ canvas {
     }
     
     .visualization {
-        margin: 0.5rem;
-        padding: 1rem;
+        margin: 0;
+        padding: 0;
     }
     
     canvas {
