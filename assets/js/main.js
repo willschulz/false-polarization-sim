@@ -40,12 +40,22 @@ function setup() {
     // Initialize the static distribution for the top panel
     populateStaticDistribution(UI_CONFIG.staticSample.nUsers);
     
+    // Attempt to load external selection model(s)
+    if (typeof loadIssueIrtScaleModel === 'function') {
+        loadIssueIrtScaleModel();
+    }
+    if (typeof loadIssueSelectionModel === 'function') {
+        loadIssueSelectionModel();
+    }
+
     // Initialize UI controls
     initControls();
     updateDisplayValues();
     
     console.log('Self-Censorship Visualization initialized');
     console.log('Model parameters:', MODEL_CONFIG);
+
+    // Model info modal removed
 }
 
 // Note: draw() function is defined in visualization.js

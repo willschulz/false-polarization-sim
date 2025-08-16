@@ -36,21 +36,35 @@
                 
 
                 <div class="control-group">
+                    <label>Political tweeting model (o_mean_political ~ issue_irt_scale + issue_irt_scale^2)</label>
+                    <div>
+                        <label>Linear b1: <span id="lmLinearVal">0.0000</span></label>
+                        <input id="lmLinearSlider" type="range" min="-1" max="1" step="0.0005" value="0">
+                    </div>
+                    <div>
+                        <label>Quadratic b2: <span id="lmQuadraticVal">0.0000</span></label>
+                        <input id="lmQuadraticSlider" type="range" min="-1" max="1" step="0.0005" value="0">
+                    </div>
+                    <small class="help-text">Adjust coefficients used for political tweeting probability if a model is loaded.</small>
+                </div>
+
+                <div class="control-group">
+                    <label>Issue selection model (prevalence_score ~ issue_specific_conservatism + issue_specific_conservatism^2)</label>
+                    <div>
+                        <label>Linear c1: <span id="issueSelLinearVal">0.000000</span></label>
+                        <input id="issueSelLinearSlider" type="range" min="-1" max="1" step="0.0005" value="0">
+                    </div>
+                    <div>
+                        <label>Quadratic c2: <span id="issueSelQuadraticVal">0.000000</span></label>
+                        <input id="issueSelQuadraticSlider" type="range" min="-1" max="1" step="0.0005" value="0">
+                    </div>
+                    <small class="help-text">Adjust coefficients used for topic selection weights if a model is loaded.</small>
+                </div>
+
+                <div class="control-group">
                     <label for="issuesSlider">Number of issues per user: <span id="issuesVal">20</span></label>
                     <input id="issuesSlider" type="range" min="3" max="50" step="1" value="20">
                     <small class="help-text">How many political issues each user has opinions about</small>
-                </div>
-                
-                <div class="control-group">
-                    <label for="beta1Slider">User-level filtering effect (β₁): <span id="beta1Val">0.015</span></label>
-                    <input id="beta1Slider" type="range" min="0" max="0.05" step="0.001" value="0.014">
-                    <small class="help-text">How much other issues' extremity affects posting probability</small>
-                </div>
-                
-                <div class="control-group">
-                    <label for="beta2Slider">Issue-level filtering effect (β₂): <span id="beta2Val">0.005</span></label>
-                    <input id="beta2Slider" type="range" min="0" max="0.02" step="0.0005" value="0.0045">
-                    <small class="help-text">How much this issue's extremity affects posting probability</small>
                 </div>
             </div>
             

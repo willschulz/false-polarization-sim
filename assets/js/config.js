@@ -20,30 +20,6 @@ const MODEL_CONFIG = {
     // Default number of issues each user has opinions about
     nIssues: 20,
     
-    // Linear probability model coefficients
-    // These control how extremity affects posting probability
-    coefficients: {
-        // Constant term (intercept) - baseline posting probability
-        beta0: -0.004686,
-        
-        // User-level filtering effect - how other issues' extremity affects posting
-        // Higher values mean users with extreme views on other topics are more likely to post
-        beta1: 0.01455,
-        
-        // Issue-level filtering effect - how this issue's extremity affects posting
-        // Higher values mean more extreme attitudes are more likely to be posted
-        beta2: 0.004542
-    },
-    
-    // Political tweeting probability function parameters
-    politicalTweeting: {
-        // Use a logistic-shaped function of ideology by default
-        // p = base + amp * sigmoid(slope * x)
-        base: 0.05,
-        amplitude: 0.25,
-        slope: 0.8,
-        center: 0.0
-    },
     
     // Random effect standard deviations
     randomEffects: {
@@ -141,18 +117,6 @@ const UI_CONFIG = {
             max: 50,
             step: 1,
             default: 20
-        },
-        beta1: {
-            min: 0,
-            max: 0.05,
-            step: 0.001,
-            default: 0.014
-        },
-        beta2: {
-            min: 0,
-            max: 0.02,
-            step: 0.0005,
-            default: 0.0045
         }
     },
     
@@ -237,11 +201,7 @@ const MATH_UTILS = {
  */
 const HELP_TEXT = {
     nIssues: "Controls how many political issues each simulated user has opinions about. More issues provide a richer basis for self-selection effects.",
-    
-    beta1: "User-level filtering coefficient. Higher values mean users with extreme views on other topics are more likely to post on any given topic.",
-    
-    beta2: "Issue-level filtering coefficient. Higher values mean more extreme attitudes on specific issues are more likely to be posted.",
-    
+
     visualization: "This four-panel visualization shows how self-selection (who posts) and self-censorship (what gets posted) combine to create apparent polarization in visible attitudes."
 };
 

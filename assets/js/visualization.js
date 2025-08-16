@@ -10,7 +10,7 @@ let balls = [];
  */
 function mapValueToX(val) {
     const [min, max] = HISTOGRAM_CONFIG.range;
-    const clamped = constrain(val, min, max);
+    const clamped = (typeof MATH_UTILS !== 'undefined') ? MATH_UTILS.clamp(val, min, max) : Math.min(Math.max(val, min), max);
     const frac = (clamped - min) / (max - min);
     return frac * width;
 }
@@ -68,6 +68,15 @@ function drawUserSelectionFilter() {
  */
 function draw() {
     background(255, 255, 255);
+    // Ensure panels are initialized even if setup hasn't run yet for some reason
+    if (!HISTOGRAM_CONFIG.panels || HISTOGRAM_CONFIG.panels.length < 3) {
+        const panelHeight = height / 3;
+        HISTOGRAM_CONFIG.panels = [
+            { baseY: panelHeight - 50 },
+            { baseY: 2 * panelHeight - 50 },
+            { baseY: 3 * panelHeight - 50 }
+        ];
+    }
     
     // Draw panel dividers (3 panels)
     const ph = height / 3;
@@ -86,9 +95,14 @@ function draw() {
     }
     
     // Draw visualizations
-    drawNormalDensity(0);                              // Panel 1: static normal curve
-    drawAuthorsOverlay(1);                             // Panel 2: authors overlay
-    drawAttitudesOverlay(2);                           // Panel 3: attitudes overlay
+    try {
+        drawNormalDensity(0);                              // Panel 1: static normal curve
+        drawAuthorsOverlay(1);                             // Panel 2: authors overlay
+        drawAttitudesOverlay(2);                           // Panel 3: attitudes overlay
+    } catch (err) {
+        // Avoid breaking the draw loop; log for debugging
+        if (console && console.error) console.error('Draw error:', err);
+    }
 
     // Draw selection filters between panels
     drawUserSelectionFilter();

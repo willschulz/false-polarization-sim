@@ -17,6 +17,16 @@ function initControls() {
     const issuesVal = document.getElementById('issuesVal');
     const beta1Val = document.getElementById('beta1Val');
     const beta2Val = document.getElementById('beta2Val');
+    // New controls for lm() tuning
+    const lmLinearSlider = document.getElementById('lmLinearSlider');
+    const lmQuadraticSlider = document.getElementById('lmQuadraticSlider');
+    const lmLinearVal = document.getElementById('lmLinearVal');
+    const lmQuadraticVal = document.getElementById('lmQuadraticVal');
+    // Issue selection tuning controls
+    const issueSelLinearSlider = document.getElementById('issueSelLinearSlider');
+    const issueSelQuadraticSlider = document.getElementById('issueSelQuadraticSlider');
+    const issueSelLinearVal = document.getElementById('issueSelLinearVal');
+    const issueSelQuadraticVal = document.getElementById('issueSelQuadraticVal');
     
     // Slider event listeners
     issuesSlider.addEventListener('input', () => {
@@ -26,15 +36,81 @@ function initControls() {
         populateStaticDistribution(UI_CONFIG.staticSample.nUsers);
     });
     
-    beta1Slider.addEventListener('input', () => {
-        MODEL_CONFIG.coefficients.beta1 = parseFloat(beta1Slider.value);
-        beta1Val.textContent = MODEL_CONFIG.coefficients.beta1.toFixed(3);
+    // legacy beta sliders removed
+
+    // Initialize lm() sliders when model loads (if present)
+    window.addEventListener('issueIrtModelLoaded', (e) => {
+        const coefs = e.detail?.coefs || {};
+        const b1 = coefs['issue_irt_scale'] ?? 0;
+        const b2 = coefs['issue_irt_scale_sq'] ?? coefs['I(issue_irt_scale^2)'] ?? 0;
+        if (lmLinearSlider) {
+            lmLinearSlider.value = b1;
+            lmLinearVal.textContent = Number(b1).toFixed(6);
+            if (window.ISSUE_IRT_TUNING) window.ISSUE_IRT_TUNING.linear = b1;
+        }
+        if (lmQuadraticSlider) {
+            lmQuadraticSlider.value = b2;
+            lmQuadraticVal.textContent = Number(b2).toFixed(6);
+            if (window.ISSUE_IRT_TUNING) window.ISSUE_IRT_TUNING.quadratic = b2;
+        }
     });
-    
-    beta2Slider.addEventListener('input', () => {
-        MODEL_CONFIG.coefficients.beta2 = parseFloat(beta2Slider.value);
-        beta2Val.textContent = MODEL_CONFIG.coefficients.beta2.toFixed(3);
+
+    // Hook lm() sliders to tuning values used by selection.js
+    if (lmLinearSlider) {
+        lmLinearSlider.addEventListener('input', () => {
+            const v = parseFloat(lmLinearSlider.value);
+            if (window.ISSUE_IRT_TUNING) {
+                window.ISSUE_IRT_TUNING.linear = v;
+            }
+            lmLinearVal.textContent = v.toFixed(6);
+        });
+    }
+    if (lmQuadraticSlider) {
+        lmQuadraticSlider.addEventListener('input', () => {
+            const v = parseFloat(lmQuadraticSlider.value);
+            if (window.ISSUE_IRT_TUNING) {
+                window.ISSUE_IRT_TUNING.quadratic = v;
+            }
+            lmQuadraticVal.textContent = v.toFixed(6);
+        });
+    }
+
+    // Initialize issue selection sliders when model loads
+    window.addEventListener('issueSelectionModelLoaded', (e) => {
+        const coefs = e.detail?.coefs || {};
+        const c1 = coefs['issue_specific_conservatism'] ?? 0;
+        const c2 = coefs['issue_specific_conservatism_sq'] ?? coefs['I(issue_specific_conservatism^2)'] ?? 0;
+        if (issueSelLinearSlider) {
+            issueSelLinearSlider.value = c1;
+            issueSelLinearVal.textContent = Number(c1).toFixed(6);
+            if (window.ISSUE_SELECTION_TUNING) window.ISSUE_SELECTION_TUNING.linear = c1;
+        }
+        if (issueSelQuadraticSlider) {
+            issueSelQuadraticSlider.value = c2;
+            issueSelQuadraticVal.textContent = Number(c2).toFixed(6);
+            if (window.ISSUE_SELECTION_TUNING) window.ISSUE_SELECTION_TUNING.quadratic = c2;
+        }
     });
+
+    // Hook issue selection sliders to tuning
+    if (issueSelLinearSlider) {
+        issueSelLinearSlider.addEventListener('input', () => {
+            const v = parseFloat(issueSelLinearSlider.value);
+            if (window.ISSUE_SELECTION_TUNING) {
+                window.ISSUE_SELECTION_TUNING.linear = v;
+            }
+            issueSelLinearVal.textContent = v.toFixed(6);
+        });
+    }
+    if (issueSelQuadraticSlider) {
+        issueSelQuadraticSlider.addEventListener('input', () => {
+            const v = parseFloat(issueSelQuadraticSlider.value);
+            if (window.ISSUE_SELECTION_TUNING) {
+                window.ISSUE_SELECTION_TUNING.quadratic = v;
+            }
+            issueSelQuadraticVal.textContent = v.toFixed(6);
+        });
+    }
     
     // Button event listeners
     document.getElementById('sampleBtn').addEventListener('click', () => {
@@ -75,7 +151,7 @@ function toggleAutoSampling(button) {
  * Update UI display values to match current configuration
  */
 function updateDisplayValues() {
-    document.getElementById('issuesVal').textContent = MODEL_CONFIG.nIssues;
-    document.getElementById('beta1Val').textContent = MODEL_CONFIG.coefficients.beta1.toFixed(3);
-    document.getElementById('beta2Val').textContent = MODEL_CONFIG.coefficients.beta2.toFixed(3);
+    const issuesValEl = document.getElementById('issuesVal');
+    if (issuesValEl) issuesValEl.textContent = MODEL_CONFIG.nIssues;
+    // legacy beta displays removed
 }
