@@ -35,6 +35,16 @@ const MODEL_CONFIG = {
         beta2: 0.004542
     },
     
+    // Political tweeting probability function parameters
+    politicalTweeting: {
+        // Use a logistic-shaped function of ideology by default
+        // p = base + amp * sigmoid(slope * x)
+        base: 0.05,
+        amplitude: 0.25,
+        slope: 0.8,
+        center: 0.0
+    },
+    
     // Random effect standard deviations
     randomEffects: {
         // User-level random intercept standard deviation
@@ -175,6 +185,13 @@ const MATH_UTILS = {
     },
     
     /**
+     * Logistic sigmoid function
+     */
+    sigmoid: function(z) {
+        return 1 / (1 + Math.exp(-z));
+    },
+    
+    /**
      * Clamp a value between min and max (p5.js constrain equivalent)
      * @param {number} value - Value to clamp
      * @param {number} min - Minimum value
@@ -185,6 +202,39 @@ const MATH_UTILS = {
         return Math.min(Math.max(value, min), max);
     }
 };
+
+// ===================================================================
+// SAMPLING/SELECTION FUNCTIONS
+// ===================================================================
+
+/**
+ * Probability a tweet from a user with ideology x is political.
+ * Tunable via MODEL_CONFIG.politicalTweeting.
+ */
+function political_tweeting_probability_function(x) {
+    const cfg = MODEL_CONFIG.politicalTweeting;
+    const s = MATH_UTILS.sigmoid(cfg.slope * (x - cfg.center));
+    const p = cfg.base + cfg.amplitude * s;
+    return MATH_UTILS.clamp(p, 0, 1);
+}
+
+/**
+ * Choose which issue the tweet is about, based on issue ideologies.
+ * Default: probability proportional to absolute extremity.
+ * @param {number[]} topicIdeologies
+ * @returns {number} index of chosen topic
+ */
+function pick_tweet_topic(topicIdeologies) {
+    const weights = topicIdeologies.map(v => Math.abs(v));
+    const sum = weights.reduce((a, b) => a + b, 0);
+    if (sum <= 0) return Math.floor(Math.random() * topicIdeologies.length);
+    let r = Math.random() * sum;
+    for (let i = 0; i < weights.length; i++) {
+        r -= weights[i];
+        if (r <= 0) return i;
+    }
+    return weights.length - 1;
+}
 
 // ===================================================================
 // DOCUMENTATION STRINGS

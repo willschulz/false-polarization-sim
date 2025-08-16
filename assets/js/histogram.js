@@ -5,7 +5,9 @@
 // Global histogram containers
 const histograms = {
     trueAll: { counts: [] },
-    truePosting: { counts: [] },
+    // Replaces previous 'truePosting' with separate author histograms
+    tweetAuthorsPolitical: { counts: [] },
+    tweetAuthorsNonPolitical: { counts: [] },
     postedAttitudes: { counts: [] },
     shadowAttitudes: { counts: [] }
 };
@@ -53,7 +55,8 @@ function drawHistogram(histName, panelIdx) {
         
         let col;
         if (histName === 'trueAll') col = color(0, 128, 0, 180);
-        else if (histName === 'truePosting') col = color(0, 102, 204, 180);
+        else if (histName === 'tweetAuthorsPolitical') col = color(0, 102, 204, 180);
+        else if (histName === 'tweetAuthorsNonPolitical') col = color(150, 150, 255, 180);
         else if (histName === 'postedAttitudes') col = color(220, 0, 0, 180);
         else col = color(128, 128, 128, 180);
         
@@ -70,9 +73,10 @@ function drawHistogram(histName, panelIdx) {
     
     let label;
     if (histName === 'trueAll') label = 'All users: true means';
-    else if (histName === 'truePosting') label = 'Posting users: true means';
-    else if (histName === 'postedAttitudes') label = 'Visible attitudes (posted)';
-    else label = 'Shadow attitudes (unposted)';
+    else if (histName === 'tweetAuthorsPolitical') label = 'Tweet authors: political tweets';
+    else if (histName === 'tweetAuthorsNonPolitical') label = 'Tweet authors: non-political tweets';
+    else if (histName === 'postedAttitudes') label = 'Attitudes: posted (red) vs shadow (gray)';
+    else label = 'Attitudes: posted (red) vs shadow (gray)';
     
     text(label, width / 2, baseY + 20);
 }
@@ -144,6 +148,42 @@ function drawNormalDensity(panelIdx) {
     noStroke();
     fill(0);
     text('All users: true means', width / 2, baseY + 20);
+}
+
+/**
+ * Draw overlay of posted and shadow attitudes in the same panel
+ */
+function drawAttitudesOverlay(panelIdx) {
+    const panel = HISTOGRAM_CONFIG.panels[panelIdx];
+    const baseY = panel.baseY;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const [posted, shadow] = [histograms.postedAttitudes, histograms.shadowAttitudes];
+    const maxCount = Math.max(...posted.counts, ...shadow.counts, 1);
+    const binPixelW = width / HISTOGRAM_CONFIG.nBins;
+    
+    rectMode(CORNER);
+    // Draw shadow first (gray)
+    noStroke();
+    fill(color(128, 128, 128, 140));
+    for (let i = 0; i < shadow.counts.length; i++) {
+        const barH = (shadow.counts[i] / maxCount) * barMaxHeight;
+        const x = i * binPixelW;
+        rect(x, baseY, binPixelW - 1, -barH);
+    }
+    // Draw posted on top (red)
+    fill(color(220, 0, 0, 160));
+    for (let i = 0; i < posted.counts.length; i++) {
+        const barH = (posted.counts[i] / maxCount) * barMaxHeight;
+        const x = i * binPixelW;
+        rect(x, baseY, binPixelW - 1, -barH);
+    }
+    
+    // Baseline and unified label
+    stroke(0);
+    line(0, baseY, width, baseY);
+    noStroke();
+    fill(0);
+    text('Attitudes: posted (red) vs shadow (gray)', width / 2, baseY + 20);
 }
 
 /**

@@ -21,7 +21,7 @@ class Ball {
         this.landed = false;
         
         // User-specific properties (for squares that spawn issue circles)
-        this.pendingIssues = null; // array of {val, isPosted}
+        this.pendingIssues = null; // array of {val, isTweetTopic}
         this.pendingBinIdx = null;
         this.trueMean = null;
         this.issuesProcessed = false;
@@ -41,7 +41,7 @@ class Ball {
                 this.y = this.targetY;
                 this.landed = true;
                 
-                // Update histogram
+                // Update histogram for this object when it lands
                 if (this.histTarget) {
                     addValueToHistogram(this.histTarget, this.value);
                 }
@@ -65,15 +65,13 @@ class Ball {
         
         for (const issue of this.pendingIssues) {
             const startX = barStartX + Math.random() * binPixelW;
+            // Circles originate from the political authors panel (panel 2)
             const startY = HISTOGRAM_CONFIG.panels[1].baseY;
             const targetX = mapValueToX(issue.val);
-            const targetY = issue.isPosted 
-                ? HISTOGRAM_CONFIG.panels[2].baseY 
-                : HISTOGRAM_CONFIG.panels[3].baseY;
-            const col = issue.isPosted 
-                ? color(220, 0, 0) 
-                : color(128, 128, 128);
-            const histKey = issue.isPosted ? 'postedAttitudes' : 'shadowAttitudes';
+            // Send both posted and shadow attitudes to the attitudes overlay panel (panel 4)
+            const targetY = HISTOGRAM_CONFIG.panels[3].baseY;
+            const col = issue.isTweetTopic ? color(220, 0, 0) : color(128, 128, 128);
+            const histKey = issue.isTweetTopic ? 'postedAttitudes' : 'shadowAttitudes';
             
             balls.push(new Ball(startX, startY, targetX, targetY, 'circle', col, issue.val, histKey));
         }

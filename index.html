@@ -28,7 +28,7 @@
             <!-- Control Panel -->
             <div class="controls" id="controlPanel">
                 <div class="control-group button-group">
-                    <button id="sampleBtn" class="btn btn-primary">Sample User</button>
+                    <button id="sampleBtn" class="btn btn-primary">Sample Tweet</button>
                     <button id="autoBtn" class="btn btn-secondary">Start Auto Sample</button>
                     <button id="resetBtn" class="btn btn-danger">Reset</button>
                 </div>
@@ -56,17 +56,19 @@
             <div class="explanation">
                 <h3>How to Read This Visualization</h3>
                 <p>
-                    Four stages show how filtering shapes visible and invisible attitudes:
+                    Four stages show how tweet sampling and topic selection shape visible and invisible attitudes:
                 </p>
                 <ul>
                     <li><strong>Stage 1 (Green):</strong> All users' true ideological means</li>
-                    <li><strong>Stage 2 (Blue):</strong> Users who post at least one issue</li>
-                    <li><strong>Stage 3 (Red):</strong> Individual attitudes that get posted (visible)</li>
-                    <li><strong>Stage 4 (Gray):</strong> Individual attitudes that remain unposted (shadow)</li>
+                    <li><strong>Stage 2 (Blue):</strong> Political tweet authors</li>
+                    <li><strong>Stage 3 (Light Blue):</strong> Non-political tweet authors</li>
+                    <li><strong>Stage 4 (Red/Gray):</strong> Attitudes overlay — posted topic (red) vs shadow attitudes (gray)</li>
                 </ul>
                 <p>
-                    Squares represent users' true means. When a user posts, their square drops to stage 2, 
-                    then individual issue circles emanate and fall to stages 3 or 4 based on posting decisions.
+                    Each sample selects a user from the population without bias, then classifies the tweet as
+                    political based on the user's ideology. Political tweets drop to Stage 2; non-political tweets
+                    drop to Stage 3. For political tweets, the user's issue attitudes are shown as circles, with the
+                    selected tweet topic highlighted in red and shadow attitudes in gray (Stage 4).
                 </p>
             </div>
 

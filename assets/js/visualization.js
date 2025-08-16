@@ -39,10 +39,10 @@ function draw() {
     }
     
     // Draw visualizations
-    drawNormalDensity(0);           // Top panel: static normal curve
-    drawHistogram('truePosting', 1);         // Panel 2: posting users histogram
-    drawHistogram('postedAttitudes', 2);     // Panel 3: posted attitudes histogram
-    drawHistogram('shadowAttitudes', 3);     // Panel 4: shadow attitudes histogram
+    drawNormalDensity(0);                              // Panel 1: static normal curve
+    drawHistogram('tweetAuthorsPolitical', 1);         // Panel 2: political tweet authors
+    drawHistogram('tweetAuthorsNonPolitical', 2);      // Panel 3: non-political tweet authors
+    drawAttitudesOverlay(3);                           // Panel 4: attitudes overlay
     
     // Draw standard deviation markers on all panels
     for (let i = 0; i < 4; i++) {
@@ -54,90 +54,49 @@ function draw() {
  * Sample a new user and create visualization elements
  */
 function sampleUser() {
-    // Sample user's latent ideological center
+    // 1) Sample a user from the population (unbiased)
     const mu = randomGaussian(0, MODEL_CONFIG.randomEffects.sdUserMu);
-    
-    // Sample issue-level attitudes around user center
     const issues = [];
-    const absIssues = [];
-    let sumAbs = 0;
-    
     for (let i = 0; i < MODEL_CONFIG.nIssues; i++) {
-        const iv = randomGaussian(mu, MODEL_CONFIG.randomEffects.sdIssue);
-        issues.push(iv);
-        const a = Math.abs(iv);
-        absIssues.push(a);
-        sumAbs += a;
+        issues.push(randomGaussian(mu, MODEL_CONFIG.randomEffects.sdIssue));
     }
-    
-    // Compute user's true mean across issues
     const trueMean = issues.reduce((a, b) => a + b, 0) / MODEL_CONFIG.nIssues;
-    
-    // Sample user-level random intercept
-    const u_user = randomGaussian(0, MODEL_CONFIG.randomEffects.sdUser);
-    
-    // Compute posting probabilities for each issue
-    const pIssues = [];
-    for (let i = 0; i < MODEL_CONFIG.nIssues; i++) {
-        const abs_i = absIssues[i];
-        const otherExt = (MODEL_CONFIG.nIssues > 1) ? (sumAbs - abs_i) / (MODEL_CONFIG.nIssues - 1) : 0;
-        const v_topic = randomGaussian(0, MODEL_CONFIG.randomEffects.sdTopic);
-        
-        let eta = MODEL_CONFIG.coefficients.beta0 + 
-                 MODEL_CONFIG.coefficients.beta1 * otherExt + 
-                 MODEL_CONFIG.coefficients.beta2 * abs_i + 
-                 u_user + v_topic;
-        
-        const p_i = constrain(eta, 0, 1);
-        pIssues.push(p_i);
-    }
-    
-    // Determine if user posts at least one issue
-    let prodNot = 1;
-    for (let i = 0; i < pIssues.length; i++) {
-        prodNot *= (1 - pIssues[i]);
-    }
-    const pUserPost = 1 - prodNot;
-    const posts = Math.random() < pUserPost;
-    
-    if (!posts) {
-        return; // User doesn't post anything
-    }
-    
-    // Prepare pending issues with posting decisions
-    const pendingIssues = [];
-    for (let i = 0; i < MODEL_CONFIG.nIssues; i++) {
-        const isPosted = Math.random() < pIssues[i];
-        pendingIssues.push({ val: issues[i], isPosted: isPosted });
-    }
-    
-    // Create user square that falls to posting users panel
+
+    // 2) Decide if this tweet is political based on user ideology
+    const pPolitical = political_tweeting_probability_function(trueMean);
+    const isPolitical = Math.random() < pPolitical;
+
+    // 3) Create falling user square to the corresponding author panel
     const [min, max] = HISTOGRAM_CONFIG.range;
     const binWidthVal = (max - min) / HISTOGRAM_CONFIG.nBins;
     let binIdx = Math.floor((trueMean - min) / binWidthVal);
     if (binIdx < 0) binIdx = 0;
     if (binIdx >= HISTOGRAM_CONFIG.nBins) binIdx = HISTOGRAM_CONFIG.nBins - 1;
-    
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
     const barStartX = binIdx * binPixelW;
     const startX = barStartX + Math.random() * binPixelW;
     const targetX = startX;
-    
+    const targetPanelIdx = isPolitical ? 1 : 2;
     const userBall = new Ball(
         startX,
         HISTOGRAM_CONFIG.panels[0].baseY,
         targetX,
-        HISTOGRAM_CONFIG.panels[1].baseY,
+        HISTOGRAM_CONFIG.panels[targetPanelIdx].baseY,
         'square',
         color(0, 102, 204),
         trueMean,
-        'truePosting'
+        isPolitical ? 'tweetAuthorsPolitical' : 'tweetAuthorsNonPolitical'
     );
-    
-    userBall.pendingIssues = pendingIssues;
-    userBall.pendingBinIdx = binIdx;
-    userBall.trueMean = trueMean;
-    
+
+    // For political tweets, prepare attitudes and choose tweet topic
+    if (isPolitical) {
+        const selectedIdx = pick_tweet_topic(issues);
+        const pendingIssues = issues.map((val, idx) => ({ val, isTweetTopic: idx === selectedIdx }));
+        userBall.pendingIssues = pendingIssues;
+        userBall.pendingBinIdx = binIdx;
+        userBall.trueMean = trueMean;
+    }
+
     balls.push(userBall);
 }
 
@@ -146,7 +105,8 @@ function sampleUser() {
  */
 function resetVisualization() {
     initHistogram(histograms.trueAll);
-    initHistogram(histograms.truePosting);
+    initHistogram(histograms.tweetAuthorsPolitical);
+    initHistogram(histograms.tweetAuthorsNonPolitical);
     initHistogram(histograms.postedAttitudes);
     initHistogram(histograms.shadowAttitudes);
     balls = [];
