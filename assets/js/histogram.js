@@ -94,17 +94,17 @@ function drawAuthorsOverlay(panelIdx) {
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
 
     rectMode(CORNER);
-    // Draw non-political first (light blue)
+    // Draw non-political first (gray)
     noStroke();
-    fill(color(150, 150, 255, 140));
+    fill(color(128, 128, 128, 140));
     for (let i = 0; i < nonPolitical.counts.length; i++) {
         const barH = (nonPolitical.counts[i] / maxCount) * barMaxHeight;
         const x = i * binPixelW;
         rect(x, baseY, binPixelW - 1, -barH);
     }
 
-    // Draw political on top (blue)
-    fill(color(0, 102, 204, 160));
+    // Draw political on top (black)
+    fill(color(0, 0, 0, 170));
     for (let i = 0; i < political.counts.length; i++) {
         const barH = (political.counts[i] / maxCount) * barMaxHeight;
         const x = i * binPixelW;
@@ -116,7 +116,7 @@ function drawAuthorsOverlay(panelIdx) {
     line(0, baseY, width, baseY);
     noStroke();
     fill(0);
-    text('Tweet authors: political (blue) vs non-political (light blue)', width / 2, baseY + 20);
+    text('Tweet authors: political (black) vs non-political (gray)', width / 2, baseY + 20);
 }
 
 /**
@@ -167,7 +167,7 @@ function drawNormalDensity(panelIdx) {
     }
     
     noStroke();
-    fill(0, 128, 0, 180);
+    fill(160, 160, 160, 180); // gray fill for true-means distribution
     beginShape();
     for (let i = 0; i < nPoints; i++) {
         const cx = mapValueToX(xs[i]);
@@ -179,6 +179,17 @@ function drawNormalDensity(panelIdx) {
         vertex(cx, baseY);
     }
     endShape(CLOSE);
+    
+    // Draw black outline along the curve
+    noFill();
+    stroke(0);
+    beginShape();
+    for (let i = 0; i < nPoints; i++) {
+        const cx = mapValueToX(xs[i]);
+        const cy = baseY - (pdfVals[i] / maxPdf) * barMaxHeight;
+        vertex(cx, cy);
+    }
+    endShape();
     
     // Draw baseline and label
     stroke(0);
@@ -206,14 +217,18 @@ function drawAttitudesOverlay(panelIdx) {
     for (let i = 0; i < shadow.counts.length; i++) {
         const barH = (shadow.counts[i] / maxCount) * barMaxHeight;
         const x = i * binPixelW;
-        rect(x, baseY, binPixelW - 1, -barH);
+        const yTop = baseY - barH;
+        const r = Math.min(6, barH); // rounded top corners only
+        rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
-    // Draw posted on top (red)
-    fill(color(220, 0, 0, 160));
+    // Draw posted on top (black)
+    fill(color(0, 0, 0, 170));
     for (let i = 0; i < posted.counts.length; i++) {
         const barH = (posted.counts[i] / maxCount) * barMaxHeight;
         const x = i * binPixelW;
-        rect(x, baseY, binPixelW - 1, -barH);
+        const yTop = baseY - barH;
+        const r = Math.min(6, barH);
+        rect(x, yTop, binPixelW - 1, barH, r, r, 0, 0);
     }
     
     // Baseline and unified label
@@ -221,7 +236,7 @@ function drawAttitudesOverlay(panelIdx) {
     line(0, baseY, width, baseY);
     noStroke();
     fill(0);
-    text('Attitudes: posted (red) vs shadow (gray)', width / 2, baseY + 20);
+    text('Attitudes: posted (black) vs shadow (gray)', width / 2, baseY + 20);
 }
 
 /**

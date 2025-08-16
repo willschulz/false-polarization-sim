@@ -134,8 +134,8 @@ function sampleUser() {
         targetX,
         HISTOGRAM_CONFIG.panels[targetPanelIdx].baseY,
         'square',
-        // Start neutral; will recolor after passing USER SELECTION band
-        color(160, 160, 160),
+        // Start black; will stay black if passes filter, or turn gray if not
+        color(0, 0, 0),
         trueMean,
         isPolitical ? 'tweetAuthorsPolitical' : 'tweetAuthorsNonPolitical'
     );

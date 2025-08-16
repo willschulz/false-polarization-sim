@@ -90,7 +90,7 @@ class Ball {
         fill(this.color);
         if (this.shape === 'square') {
             rectMode(CENTER);
-            // For user squares: switch color after crossing USER SELECTION band
+            // For user squares: if they DO NOT pass the USER SELECTION band (i.e., non-political), turn gray after the band
             if (this.isPolitical !== undefined) {
                 const panelAbove = HISTOGRAM_CONFIG.panels[0];
                 const panelBelow = HISTOGRAM_CONFIG.panels[1];
@@ -98,7 +98,11 @@ class Ball {
                 const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
                 const yTop = yCenter - filterHeight / 2;
                 if (this.y >= yTop + filterHeight) {
-                    fill(this.isPolitical ? color(0, 102, 204) : color(150, 150, 255));
+                    if (!this.isPolitical) {
+                        fill(color(128, 128, 128));
+                    } else {
+                        fill(color(0, 0, 0));
+                    }
                 }
             }
             rect(this.x, this.y, this.size, this.size);
@@ -111,7 +115,7 @@ class Ball {
                 const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
                 const yTop = yCenter - filterHeight / 2;
                 if (this.y >= yTop + filterHeight) {
-                    fill(color(220, 0, 0));
+                    fill(color(0, 0, 0));
                 }
             }
             circle(this.x, this.y, this.size);
