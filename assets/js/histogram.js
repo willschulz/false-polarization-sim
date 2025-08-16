@@ -82,6 +82,44 @@ function drawHistogram(histName, panelIdx) {
 }
 
 /**
+ * Draw overlay of political vs non-political tweet authors in the same panel
+ */
+function drawAuthorsOverlay(panelIdx) {
+    const panel = HISTOGRAM_CONFIG.panels[panelIdx];
+    const baseY = panel.baseY;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const political = histograms.tweetAuthorsPolitical;
+    const nonPolitical = histograms.tweetAuthorsNonPolitical;
+    const maxCount = Math.max(...political.counts, ...nonPolitical.counts, 1);
+    const binPixelW = width / HISTOGRAM_CONFIG.nBins;
+
+    rectMode(CORNER);
+    // Draw non-political first (light blue)
+    noStroke();
+    fill(color(150, 150, 255, 140));
+    for (let i = 0; i < nonPolitical.counts.length; i++) {
+        const barH = (nonPolitical.counts[i] / maxCount) * barMaxHeight;
+        const x = i * binPixelW;
+        rect(x, baseY, binPixelW - 1, -barH);
+    }
+
+    // Draw political on top (blue)
+    fill(color(0, 102, 204, 160));
+    for (let i = 0; i < political.counts.length; i++) {
+        const barH = (political.counts[i] / maxCount) * barMaxHeight;
+        const x = i * binPixelW;
+        rect(x, baseY, binPixelW - 1, -barH);
+    }
+
+    // Baseline and unified label
+    stroke(0);
+    line(0, baseY, width, baseY);
+    noStroke();
+    fill(0);
+    text('Tweet authors: political (blue) vs non-political (light blue)', width / 2, baseY + 20);
+}
+
+/**
  * Populate the top histogram with static normal distribution
  */
 function populateStaticDistribution(nSamples) {

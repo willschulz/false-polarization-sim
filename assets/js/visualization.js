@@ -16,17 +16,64 @@ function mapValueToX(val) {
 }
 
 /**
+ * Draw the attitude selection filter band between panels 2 and 3
+ */
+function drawAttitudeSelectionFilter() {
+    const panelAbove = HISTOGRAM_CONFIG.panels[1];
+    const panelBelow = HISTOGRAM_CONFIG.panels[2];
+    const filterHeight = 20; // px
+    const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+    const yTop = yCenter - filterHeight / 2;
+
+    noStroke();
+    fill(180, 180, 180); // gray band
+    rect(0, yTop, width, filterHeight);
+
+    // Label: white, bold, left-aligned inside the band
+    fill(255);
+    textAlign(LEFT, CENTER);
+    push();
+    textStyle(BOLD);
+    text('ATTITUDE SELECTION', 8, yTop + filterHeight / 2);
+    pop();
+    textAlign(CENTER, CENTER);
+}
+
+/**
+ * Draw the user selection filter band between panels 1 and 2
+ */
+function drawUserSelectionFilter() {
+    const panelAbove = HISTOGRAM_CONFIG.panels[0];
+    const panelBelow = HISTOGRAM_CONFIG.panels[1];
+    const filterHeight = 20; // px
+    const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+    const yTop = yCenter - filterHeight / 2;
+
+    noStroke();
+    fill(180, 180, 180); // gray band
+    rect(0, yTop, width, filterHeight);
+
+    // Label: white, bold, left-aligned
+    fill(255);
+    textAlign(LEFT, CENTER);
+    push();
+    textStyle(BOLD);
+    text('USER SELECTION', 8, yTop + filterHeight / 2);
+    pop();
+    textAlign(CENTER, CENTER);
+}
+
+/**
  * Main drawing function called every frame by p5.js
  */
 function draw() {
     background(255, 255, 255);
     
-    // Draw panel dividers
-    const ph = height / 4;
+    // Draw panel dividers (3 panels)
+    const ph = height / 3;
     stroke(230);
     line(0, ph, width, ph);
     line(0, 2 * ph, width, 2 * ph);
-    line(0, 3 * ph, width, 3 * ph);
     
     // Update and draw balls
     for (let i = balls.length - 1; i >= 0; i--) {
@@ -40,12 +87,15 @@ function draw() {
     
     // Draw visualizations
     drawNormalDensity(0);                              // Panel 1: static normal curve
-    drawHistogram('tweetAuthorsPolitical', 1);         // Panel 2: political tweet authors
-    drawHistogram('tweetAuthorsNonPolitical', 2);      // Panel 3: non-political tweet authors
-    drawAttitudesOverlay(3);                           // Panel 4: attitudes overlay
+    drawAuthorsOverlay(1);                             // Panel 2: authors overlay
+    drawAttitudesOverlay(2);                           // Panel 3: attitudes overlay
+
+    // Draw selection filters between panels
+    drawUserSelectionFilter();
+    drawAttitudeSelectionFilter();
     
     // Draw standard deviation markers on all panels
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < HISTOGRAM_CONFIG.panels.length; i++) {
         drawStdMarkers(i);
     }
 }
@@ -76,14 +126,16 @@ function sampleUser() {
     const barStartX = binIdx * binPixelW;
     const startX = barStartX + Math.random() * binPixelW;
     const targetX = startX;
-    const targetPanelIdx = isPolitical ? 1 : 2;
+    // Both author types go to the same overlay panel (panel 2)
+    const targetPanelIdx = 1;
     const userBall = new Ball(
         startX,
         HISTOGRAM_CONFIG.panels[0].baseY,
         targetX,
         HISTOGRAM_CONFIG.panels[targetPanelIdx].baseY,
         'square',
-        color(0, 102, 204),
+        // Start neutral; will recolor after passing USER SELECTION band
+        color(160, 160, 160),
         trueMean,
         isPolitical ? 'tweetAuthorsPolitical' : 'tweetAuthorsNonPolitical'
     );
@@ -96,6 +148,9 @@ function sampleUser() {
         userBall.pendingBinIdx = binIdx;
         userBall.trueMean = trueMean;
     }
+
+    // Mark the author type for color-switch after the USER SELECTION band
+    userBall.isPolitical = isPolitical;
 
     balls.push(userBall);
 }

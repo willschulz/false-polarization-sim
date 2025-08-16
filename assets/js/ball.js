@@ -25,6 +25,8 @@ class Ball {
         this.pendingBinIdx = null;
         this.trueMean = null;
         this.issuesProcessed = false;
+        this.isTweetTopic = false;
+        this.isPolitical = undefined; // for user squares
     }
     
     /**
@@ -68,12 +70,15 @@ class Ball {
             // Circles originate from the political authors panel (panel 2)
             const startY = HISTOGRAM_CONFIG.panels[1].baseY;
             const targetX = mapValueToX(issue.val);
-            // Send both posted and shadow attitudes to the attitudes overlay panel (panel 4)
-            const targetY = HISTOGRAM_CONFIG.panels[3].baseY;
-            const col = issue.isTweetTopic ? color(220, 0, 0) : color(128, 128, 128);
+            // Send both posted and shadow attitudes to the attitudes overlay panel (panel 3 in 3-panel layout)
+            const targetY = HISTOGRAM_CONFIG.panels[2].baseY;
+            // Start all circles as gray; they will turn red after crossing selection band if topic
+            const col = color(128, 128, 128);
             const histKey = issue.isTweetTopic ? 'postedAttitudes' : 'shadowAttitudes';
             
-            balls.push(new Ball(startX, startY, targetX, targetY, 'circle', col, issue.val, histKey));
+            const circle = new Ball(startX, startY, targetX, targetY, 'circle', col, issue.val, histKey);
+            circle.isTweetTopic = issue.isTweetTopic;
+            balls.push(circle);
         }
     }
     
@@ -85,8 +90,30 @@ class Ball {
         fill(this.color);
         if (this.shape === 'square') {
             rectMode(CENTER);
+            // For user squares: switch color after crossing USER SELECTION band
+            if (this.isPolitical !== undefined) {
+                const panelAbove = HISTOGRAM_CONFIG.panels[0];
+                const panelBelow = HISTOGRAM_CONFIG.panels[1];
+                const filterHeight = 20;
+                const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+                const yTop = yCenter - filterHeight / 2;
+                if (this.y >= yTop + filterHeight) {
+                    fill(this.isPolitical ? color(0, 102, 204) : color(150, 150, 255));
+                }
+            }
             rect(this.x, this.y, this.size, this.size);
         } else {
+            // Attitude circle: switch to red after crossing the selection band if it's the tweet topic
+            if (this.isTweetTopic) {
+                const panelAbove = HISTOGRAM_CONFIG.panels[1];
+                const panelBelow = HISTOGRAM_CONFIG.panels[2];
+                const filterHeight = 20;
+                const yCenter = (panelAbove.baseY + panelBelow.baseY) / 2 - (HISTOGRAM_CONFIG.visual.maxBarHeight / 2);
+                const yTop = yCenter - filterHeight / 2;
+                if (this.y >= yTop + filterHeight) {
+                    fill(color(220, 0, 0));
+                }
+            }
             circle(this.x, this.y, this.size);
         }
     }

@@ -25,13 +25,12 @@ function setup() {
     initHistogram(histograms.postedAttitudes);
     initHistogram(histograms.shadowAttitudes);
     
-    // Calculate panel positions based on canvas height
-    const panelHeight = height / 4;
+    // Calculate panel positions based on canvas height (3 panels)
+    const panelHeight = height / 3;
     HISTOGRAM_CONFIG.panels = [
         { baseY: panelHeight - 50 },                // Panel 1: Normal population
-        { baseY: 2 * panelHeight - 50 },            // Panel 2: Political tweet authors
-        { baseY: 3 * panelHeight - 50 },            // Panel 3: Non-political tweet authors
-        { baseY: 4 * panelHeight - 50 }             // Panel 4: Attitudes overlay
+        { baseY: 2 * panelHeight - 50 },            // Panel 2: Authors overlay (political vs non-political)
+        { baseY: 3 * panelHeight - 50 }             // Panel 3: Attitudes overlay
     ];
     
     // Set up text rendering
