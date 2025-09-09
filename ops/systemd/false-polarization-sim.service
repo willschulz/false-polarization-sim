@@ -1,0 +1,23 @@
+[Unit]
+Description=False Polarization Visualization (Python http.server)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/false-polarization-sim
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /opt/false-polarization-sim/server.py
+Restart=on-failure
+RestartSec=5
+User=www-data
+Group=www-data
+StandardOutput=journal
+StandardError=journal
+LimitNOFILE=65535
+TasksMax=512
+MemoryMax=300M
+
+[Install]
+WantedBy=multi-user.target
+
+

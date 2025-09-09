@@ -1,0 +1,13 @@
+[Unit]
+Description=Run false-polarization-sim monitor every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+AccuracySec=10s
+Unit=false-polarization-sim-monitor.service
+
+[Install]
+WantedBy=timers.target
+
+
