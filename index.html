@@ -101,29 +101,15 @@
             <div class="explanation">
                 <h3>How to Read This Visualization</h3>
                 <p>
-                    Three stages show how tweet sampling and topic selection shape visible and invisible attitudes:
-                </p>
-                <ul>
-                    <li><strong>Stage 1 (Green):</strong> All users' true ideological means</li>
-                    <li><strong>Stage 2 (Black/Gray):</strong> Tweet authors overlay — political (black) vs non-political (gray)</li>
-                    <li><strong>Stage 3 (Black/Gray):</strong> Attitudes overlay — posted topic (black) vs shadow attitudes (gray)</li>
-                </ul>
-                <p>
-                    Each sample selects a user from the population without bias, then classifies the tweet as
-                    political based on the user's ideology. Author squares drop to Stage 2. They pass through a gray
-                    "USER SELECTION" band; political authors remain black, non-political turn gray after the band.
-                    For political tweets, the user's issue attitudes are shown as circles in Stage 3. They pass through
-                    a gray "ATTITUDE SELECTION" band; the selected topic remains/turns black after the band, other
-                    attitudes remain gray.
+                    At the top of the sampling process, users are assumed to  be drawn from a normal ideology distribution. We suppose that users tweet at equal rates, and draw user-tweets from the population without bias.  These authorship events pass through a gray "USER SELECTION" band, representing user-level self-selection into political versus non-political posting; political tweets turn yellow, while non-political tweets turn purple after the filter.  This causes the distribution of political tweets to be more spread out (polarized) than the initial sample of users.
+                    To visualize attitude selection, we suppose that users' attitudes are normally-distributed around their ideological center, and represent these attitudes as circles.  The circles pass through a gray "ATTITUDE SELECTION" band, which selects the attitude for the user's political tweet using weights derived from our multilevel model.  The selected attitude turns orange after the band, other attitudes turn Green.  This attitude-level selection causes the visible attitudes to be even more polarized than the initial sample of users, or the political-tweeting distribution.
                 </p>
             </div>
 
             <!-- Footer Content -->
             <div class="sidebar-footer">
                 <p>
-                    This visualization demonstrates how self-selection (who chooses to post) and 
-                    self-censorship (which attitudes get shared) combine to create apparent polarization 
-                    in online discourse.
+                    This visualization was inspired by the Central Limit Theorem demonstration at <a href="https://seeing-theory.brown.edu/probability-distributions/index.html">Seeing Theory</a> (Kunin, Guo, Devlin & Xiang), which was built on Mike Bostock’s JavaScript library <a href="https://d3js.org/">D3.js</a>.
                 </p>
             </div>
         </aside>

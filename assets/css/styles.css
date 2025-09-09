@@ -36,6 +36,15 @@ body {
     overflow: hidden;
 }
 
+/* Ensure links use surrounding text color */
+a,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+	color: inherit;
+}
+
 /* ===================================================================
    App Container & Sidebar Layout
    ================================================================= */
