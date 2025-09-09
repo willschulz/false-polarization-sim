@@ -97,6 +97,7 @@ const HISTOGRAM_CONFIG = {
     // Visual properties
     visual: {
         maxBarHeight: 160,    // Maximum pixel height for histogram bars
+        minBarHeight: 80,     // Minimum pixel height bars can scale down to
         selectionFilterHeight: 60, // Height of the USER/ATTITUDE selection bands
         panelTopPadding: 12,  // Pixels of headroom above bars within each panel (default for panels 2 and 3)
         topPanelTopPadding: 4, // Tighter headroom for top panel specifically

@@ -6,6 +6,29 @@
 let balls = [];
 
 /**
+ * Compute a dynamic height for selection bands that scales with available space
+ * but never below the text height plus minimum padding.
+ */
+function _computeSelectionBandHeight(panelAbove, panelBelow) {
+    const ideal = (HISTOGRAM_CONFIG && HISTOGRAM_CONFIG.visual && HISTOGRAM_CONFIG.visual.selectionFilterHeight) || 60;
+    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const gap = (panelBelow.baseY - maxBar) - panelAbove.baseY;
+    const maxAllowed = Math.max(0, gap - 4);
+    const minPad = 6; // px of vertical padding above/below text
+    let textH = 0;
+    push();
+    textStyle(BOLD);
+    // Use current textSize; main sets 12px consistently
+    textH = (typeof textAscent === 'function' && typeof textDescent === 'function')
+        ? (textAscent() + textDescent())
+        : 12; // fallback
+    pop();
+    const minAllowed = Math.ceil(textH + 2 * minPad);
+    // Prefer ideal, cap to available; ensure not below minimum padding where possible
+    return Math.max(0, Math.min(Math.max(minAllowed, 0), Math.min(ideal, maxAllowed)));
+}
+
+/**
  * Map a value to x-coordinate on canvas
  */
 function mapValueToX(val) {
@@ -21,7 +44,7 @@ function mapValueToX(val) {
 function drawAttitudeSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[1];
     const panelBelow = HISTOGRAM_CONFIG.panels[2];
-    const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
+    const filterHeight = _computeSelectionBandHeight(panelAbove, panelBelow); // px
     // Center between bottom of preceding x-axis and top of SD markers of following panel
     const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const yCenter = (panelAbove.baseY + (panelBelow.baseY - maxBar)) / 2;
@@ -47,7 +70,7 @@ function drawAttitudeSelectionFilter() {
 function drawUserSelectionFilter() {
     const panelAbove = HISTOGRAM_CONFIG.panels[0];
     const panelBelow = HISTOGRAM_CONFIG.panels[1];
-    const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight; // px
+    const filterHeight = _computeSelectionBandHeight(panelAbove, panelBelow); // px
     // Center between bottom of preceding x-axis and top of SD markers of following panel
     const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
     const yCenter = (panelAbove.baseY + (panelBelow.baseY - maxBar)) / 2;

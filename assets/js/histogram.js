@@ -44,7 +44,7 @@ function drawHistogram(histName, panelIdx) {
     const hist = histograms[histName];
     const panel = HISTOGRAM_CONFIG.panels[panelIdx];
     const baseY = panel.baseY;
-    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual._computedBarHeight || HISTOGRAM_CONFIG.visual.maxBarHeight;
     const maxCount = Math.max(...hist.counts, 1);
     const binPixelW = width / HISTOGRAM_CONFIG.nBins;
     
@@ -99,7 +99,7 @@ function drawHistogram(histName, panelIdx) {
 function drawAuthorsOverlay(panelIdx) {
     const panel = HISTOGRAM_CONFIG.panels[panelIdx];
     const baseY = panel.baseY;
-    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual._computedBarHeight || HISTOGRAM_CONFIG.visual.maxBarHeight;
     const political = histograms.tweetAuthorsPolitical;
     const nonPolitical = histograms.tweetAuthorsNonPolitical;
     const independent = true; // hard-coded independent scaling for testing
@@ -188,7 +188,7 @@ function populateStaticDistribution(nSamples) {
 function drawNormalDensity(panelIdx) {
     const panel = HISTOGRAM_CONFIG.panels[panelIdx];
     const baseY = panel.baseY;
-    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual._computedBarHeight || HISTOGRAM_CONFIG.visual.maxBarHeight;
     const [min, max] = HISTOGRAM_CONFIG.range;
     
     const nPoints = 200;
@@ -243,7 +243,7 @@ function drawNormalDensity(panelIdx) {
 function drawAttitudesOverlay(panelIdx) {
     const panel = HISTOGRAM_CONFIG.panels[panelIdx];
     const baseY = panel.baseY;
-    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual._computedBarHeight || HISTOGRAM_CONFIG.visual.maxBarHeight;
     const [posted, shadow] = [histograms.postedAttitudes, histograms.shadowAttitudes];
     const independent = true; // hard-coded independent scaling for testing
     const maxCount = independent
@@ -307,7 +307,7 @@ function drawAttitudesOverlay(panelIdx) {
 function drawStdMarkers(panelIdx) {
     const panel = HISTOGRAM_CONFIG.panels[panelIdx];
     const baseY = panel.baseY;
-    const barMaxHeight = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const barMaxHeight = HISTOGRAM_CONFIG.visual._computedBarHeight || HISTOGRAM_CONFIG.visual.maxBarHeight;
     const markers = [0, -1, 1, -2, 2];
     
     stroke(0);

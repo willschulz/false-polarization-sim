@@ -108,7 +108,17 @@ function resizeVisualizationCanvas() {
     }
 
     // Recompute panel positions based on new height
-    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    // Scale bar height with available canvas height, clamped to [minBarHeight, maxBarHeight]
+    const maxBar = (() => {
+        const baseMax = HISTOGRAM_CONFIG.visual.maxBarHeight;
+        const minBar = HISTOGRAM_CONFIG.visual.minBarHeight || Math.min(60, baseMax);
+        // Design baseline height
+        const designH = VISUAL_CONFIG.canvas.height;
+        const scaleH = height / Math.max(1, designH);
+        const proposed = Math.round(baseMax * scaleH);
+        return Math.max(minBar, Math.min(baseMax, proposed));
+    })();
+    HISTOGRAM_CONFIG.visual._computedBarHeight = maxBar;
     const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
     const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
     const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
