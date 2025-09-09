@@ -7,7 +7,9 @@ Type=oneshot
 User=deploy
 Group=deploy
 WorkingDirectory=/home/deploy/projects/false-polarization-sim
-ExecStart=/usr/bin/bash /home/deploy/projects/false-polarization-sim/ops/tools/monitor.sh
+Environment=SERVICE_NAME=false-polarization-sim
+Environment=HEALTHCHECK_URL=http://127.0.0.1:8091/
+ExecStart=/usr/bin/bash -lc '/home/deploy/projects/false-polarization-sim/ops/tools/monitor.sh'
 Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7

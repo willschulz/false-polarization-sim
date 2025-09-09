@@ -3,13 +3,15 @@ set -euo pipefail
 
 LOG_DIR=/var/log/false-polarization-sim
 STATE_DIR=/var/lib/false-polarization-sim
-SERVICE_NAME=false-polarization-sim
-DATE_TS=$(date -Is)
+SERVICE_NAME=${SERVICE_NAME:-false-polarization-sim}
+HEALTHCHECK_URL=${HEALTHCHECK_URL:-http://127.0.0.1:8091/}
 
 mkdir -p "$LOG_DIR" "$STATE_DIR"
 
 log() {
-  echo "$DATE_TS $*" | tee -a "$LOG_DIR/monitor.log"
+  local ts
+  ts=$(date -Is)
+  echo "$ts $*" | tee -a "$LOG_DIR/monitor.log"
 }
 
 # Find the main service's PID
@@ -38,7 +40,7 @@ fi
 
 # Append metrics in a key=value format on one line
 printf 'timestamp="%s" pid=%s mem_bytes=%s mem_pct=%s cpu_pct=%s fd_count=%s\n' \
-  "$DATE_TS" "$PID" "${MEM_BYTES:-0}" "${MEM_PCT:-0}" "${CPU_STAT:-0}" "${FD_COUNT:-0}" >> "$LOG_DIR/metrics.log"
+  "$(date -Is)" "$PID" "${MEM_BYTES:-0}" "${MEM_PCT:-0}" "${CPU_STAT:-0}" "${FD_COUNT:-0}" >> "$LOG_DIR/metrics.log"
 
 # Leak heuristic: strictly increasing mem_bytes over last N samples and over threshold
 N=5
@@ -60,7 +62,7 @@ fi
 
 # Healthcheck HTTP endpoint via localhost if served
 if command -v curl >/dev/null 2>&1; then
-  curl -fsS http://127.0.0.1:8091/ >/dev/null || log "WARN http check failed"
+  curl -fsS "$HEALTHCHECK_URL" >/dev/null || log "WARN http check failed: $HEALTHCHECK_URL"
 fi
 
 exit 0
