@@ -76,6 +76,58 @@ function setup() {
     // Model info modal removed
 }
 
+/**
+ * Resize the p5 canvas to fit the container without distorting aspect ratio
+ * and recompute layout-dependent positions so geometry compresses but text isn't squished.
+ */
+function resizeVisualizationCanvas() {
+    const container = document.getElementById('canvasContainer');
+    if (!container) return;
+
+    // Base canvas design size
+    const baseW = VISUAL_CONFIG.canvas.width;
+    const baseH = VISUAL_CONFIG.canvas.height;
+
+    const rect = container.getBoundingClientRect();
+    const availW = Math.max(1, Math.floor(rect.width || container.clientWidth || baseW));
+    const availH = Math.max(1, Math.floor(rect.height || container.clientHeight || baseH));
+
+    // Uniform scale to fit container
+    const scale = Math.max(0.1, Math.min(availW / baseW, availH / baseH));
+    const newW = Math.max(1, Math.round(baseW * scale));
+    const newH = Math.max(1, Math.round(baseH * scale));
+
+    // Resize underlying drawing buffer (avoid CSS scaling which distorts text)
+    resizeCanvas(newW, newH, true);
+
+    // Ensure the DOM canvas element matches pixel size (avoid browser scaling)
+    const domCanvas = container.querySelector('canvas');
+    if (domCanvas) {
+        domCanvas.style.width = newW + 'px';
+        domCanvas.style.height = newH + 'px';
+    }
+
+    // Recompute panel positions based on new height
+    const maxBar = HISTOGRAM_CONFIG.visual.maxBarHeight;
+    const defaultHeadroom = HISTOGRAM_CONFIG.visual.panelTopPadding || 0;
+    const topHeadroom = HISTOGRAM_CONFIG.visual.topPanelTopPadding ?? defaultHeadroom;
+    const bottomPadding = HISTOGRAM_CONFIG.visual.bottomPanelBottomPadding || 0;
+    const bottomLabelPad = HISTOGRAM_CONFIG.visual.bottomPanelLabelPadding || 0;
+    const baseY1 = topHeadroom + maxBar;
+    const baseY3 = height - (bottomPadding + bottomLabelPad);
+    const gap = (baseY3 - baseY1) / 2;
+    const baseY2 = baseY1 + gap;
+    HISTOGRAM_CONFIG.panels = [
+        { baseY: baseY1 },
+        { baseY: baseY2 },
+        { baseY: baseY3 }
+    ];
+
+    // Keep text settings consistent (avoid stretched glyphs)
+    textAlign(CENTER, CENTER);
+    textSize(12);
+}
+
 // Note: draw() function is defined in visualization.js
 
 /**
@@ -83,13 +135,19 @@ function setup() {
  */
 window.addEventListener('load', () => {
     console.log('Dashboard loaded successfully');
+    // Perform an initial responsive fit once DOM sizes are known
+    resizeVisualizationCanvas();
 });
 
 /**
- * Handle window resize (optional enhancement)
+ * Handle window resize: resize canvas and recompute layout (debounced)
  */
+let _resizeTimer;
 window.addEventListener('resize', () => {
-    // Could add responsive canvas resizing here if needed
+    if (_resizeTimer) clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+        resizeVisualizationCanvas();
+    }, 100);
 });
 
 /**
