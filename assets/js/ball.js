@@ -97,7 +97,9 @@ class Ball {
                 const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight;
                 const yCenter = (panelAbove.baseY + (panelBelow.baseY - HISTOGRAM_CONFIG.visual.maxBarHeight)) / 2;
                 const yTop = yCenter - filterHeight / 2;
-                if (this.y >= yTop + filterHeight) {
+                const __dynFilterH = (typeof _computeSelectionBandHeight === 'function') ? _computeSelectionBandHeight(panelAbove, panelBelow) : ((HISTOGRAM_CONFIG && HISTOGRAM_CONFIG.visual && HISTOGRAM_CONFIG.visual.selectionFilterHeight) || 60);
+                const __yBottom = (yCenter - __dynFilterH / 2) + __dynFilterH;
+                if (this.y >= __yBottom) {
                     if (!this.isPolitical) {
                         // Non-political posts: #1f3a8a
                         fill(color(31, 58, 138));
@@ -115,7 +117,9 @@ class Ball {
             const filterHeight = HISTOGRAM_CONFIG.visual.selectionFilterHeight;
             const yCenter = (panelAbove.baseY + (panelBelow.baseY - HISTOGRAM_CONFIG.visual.maxBarHeight)) / 2;
             const yTop = yCenter - filterHeight / 2;
-            if (this.y >= yTop + filterHeight) {
+            const __dynFilterH = (typeof _computeSelectionBandHeight === 'function') ? _computeSelectionBandHeight(panelAbove, panelBelow) : ((HISTOGRAM_CONFIG && HISTOGRAM_CONFIG.visual && HISTOGRAM_CONFIG.visual.selectionFilterHeight) || 60);
+            const __yBottom = (yCenter - __dynFilterH / 2) + __dynFilterH;
+            if (this.y >= __yBottom) {
                 if (this.isTweetTopic) {
                     // Visible attitudes (D): #ef6351
                     fill(color(239, 99, 81));
